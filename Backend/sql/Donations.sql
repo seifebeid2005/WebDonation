@@ -28,13 +28,23 @@ CREATE TABLE causes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
+    short_description VARCHAR(500),
+    image_url VARCHAR(500),
     goal_amount DECIMAL(10, 2) NOT NULL,
-    current_amount DECIMAL(10, 2) DEFAULT 0.00,
-    status ENUM('active', 'pending', 'closed') DEFAULT 'pending',
+    raised_amount DECIMAL(10, 2) DEFAULT 0.00,
+    currency VARCHAR(10) DEFAULT 'USD',
+    category VARCHAR(100),
+    start_date DATE,
+    end_date DATE,
+    is_featured BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    status ENUM('pending', 'active', 'closed') DEFAULT 'pending',
     created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(id)
 );
+
 
 -- DONATIONS TABLE
 CREATE TABLE donations (
@@ -66,11 +76,13 @@ CREATE TABLE cause_requests (
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
+    image_url VARCHAR(500),
     requested_amount DECIMAL(10, 2) NOT NULL,
     status ENUM('pending', 'accepted', 'declined') DEFAULT 'pending',
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 
 -- CONTACT MESSAGES TABLE
 CREATE TABLE contact_messages (
