@@ -6,5 +6,16 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: GET, POST");
 //Backend\config\database.php
-include("../../config/database.php");
+    $host = "localhost";
+    $user = "root";
+    $password = "";
+    $database = "webdonation";
+
+    $conn = new mysqli($host, $user, $password, $database);
+
+    if ($conn->connect_error) {
+        http_response_code(500);
+        echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
+        exit();
+    }
 ?>
