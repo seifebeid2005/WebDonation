@@ -4,19 +4,19 @@ import GuestRouter from "./routers/GuestRouter";
 import UserRouter from "./routers/UserRouter";
 import AdminRouter from "./routers/AdminRouter";
 
-function App() {
+const App = () => {
   const [role, setRole] = useState("guest"); // Change to 'user' or 'admin' for testing
 
-  let RouterComponent;
-  if (role === "admin") RouterComponent = AdminRouter;
-  else if (role === "user") RouterComponent = UserRouter;
-  else RouterComponent = GuestRouter;
-
-  return (
-    <BrowserRouter>
-      <RouterComponent />
-    </BrowserRouter>
-  );
-}
+  if (role === "guest") {
+    return <GuestRouter />;
+  }
+  if (role === "user") {
+    return <UserRouter />;
+  }
+  if (role === "admin") {
+    return <AdminRouter />;
+  }
+  return null;
+};
 
 export default App;
