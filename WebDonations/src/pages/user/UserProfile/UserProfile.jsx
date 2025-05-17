@@ -1,20 +1,24 @@
 // src/components/UserProfile/UserProfile.jsx
-import React, { useState, useEffect } from 'react';
-import { getProfile, updateProfile, deactivateAccount } from '../../../functions/user/profile/';
-import './UserProfile.css'; // We'll create this next
+import { useState, useEffect } from "react";
+import {
+  getProfile,
+  updateProfile,
+  deactivateAccount,
+} from "../../../functions/user/profile/";
+import "./UserProfile.css"; // We'll create this next
 
 const UserProfile = () => {
   const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    status: '',
-    created_at: '',
-    updated_at: ''
+    name: "",
+    email: "",
+    status: "",
+    created_at: "",
+    updated_at: "",
   });
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: ''
+    name: "",
+    email: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +33,7 @@ const UserProfile = () => {
         setProfile(response.data);
         setFormData({
           name: response.data.name,
-          email: response.data.email
+          email: response.data.email,
         });
         setError(null);
       } catch (err) {
@@ -44,9 +48,9 @@ const UserProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -57,7 +61,7 @@ const UserProfile = () => {
       const response = await updateProfile(formData);
       setProfile(response.data);
       setEditMode(false);
-      setSuccessMessage('Profile updated successfully!');
+      setSuccessMessage("Profile updated successfully!");
       setError(null);
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
@@ -68,12 +72,16 @@ const UserProfile = () => {
   };
 
   const handleDeactivate = async () => {
-    if (window.confirm('Are you sure you want to deactivate your account? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        "Are you sure you want to deactivate your account? This action cannot be undone."
+      )
+    ) {
       try {
         setIsLoading(true);
         await deactivateAccount();
         // Redirect to login or home page after deactivation
-        window.location.href = '/login';
+        window.location.href = "/login";
       } catch (err) {
         setError(err.message);
         setIsLoading(false);
@@ -92,8 +100,10 @@ const UserProfile = () => {
   return (
     <div className="profile-container">
       <h2>User Profile</h2>
-      
-      {successMessage && <div className="success-message">{successMessage}</div>}
+
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
       {error && <div className="error-message">{error}</div>}
 
       {!editMode ? (
@@ -118,18 +128,12 @@ const UserProfile = () => {
             <label>Last Updated:</label>
             <span>{new Date(profile.updated_at).toLocaleDateString()}</span>
           </div>
-          
+
           <div className="profile-actions">
-            <button 
-              onClick={() => setEditMode(true)}
-              className="edit-button"
-            >
+            <button onClick={() => setEditMode(true)} className="edit-button">
               Edit Profile
             </button>
-            <button 
-              onClick={handleDeactivate}
-              className="deactivate-button"
-            >
+            <button onClick={handleDeactivate} className="deactivate-button">
               Deactivate Account
             </button>
           </div>
@@ -147,7 +151,7 @@ const UserProfile = () => {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="email">Email:</label>
             <input
@@ -159,22 +163,18 @@ const UserProfile = () => {
               required
             />
           </div>
-          
+
           <div className="form-actions">
-            <button 
-              type="submit" 
-              disabled={isLoading}
-              className="save-button"
-            >
-              {isLoading ? 'Saving...' : 'Save Changes'}
+            <button type="submit" disabled={isLoading} className="save-button">
+              {isLoading ? "Saving..." : "Save Changes"}
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => {
                 setEditMode(false);
                 setFormData({
                   name: profile.name,
-                  email: profile.email
+                  email: profile.email,
                 });
               }}
               className="cancel-button"

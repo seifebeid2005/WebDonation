@@ -3,6 +3,7 @@ import { useState } from "react";
 import GuestRouter from "./routers/GuestRouter";
 import UserRouter from "./routers/UserRouter";
 import AdminRouter from "./routers/AdminRouter";
+import "./App.css";
 
 const App = () => {
   const [role, setRole] = useState("guest"); // Change to 'user' or 'admin' for testing
