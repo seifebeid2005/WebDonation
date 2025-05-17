@@ -15,6 +15,8 @@ const Header = () => {
       });
       
       if (response.ok) {
+        // Remove admin logged in status
+        localStorage.removeItem('adminLoggedIn');
         // Redirect to login page
         navigate('/admin/login');
       }
