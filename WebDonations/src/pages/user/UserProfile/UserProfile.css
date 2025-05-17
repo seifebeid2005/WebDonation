@@ -1,0 +1,136 @@
+/* src/components/UserProfile/UserProfile.css */
+
+.profile-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.profile-view .profile-field {
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+}
+
+.profile-view .profile-field label {
+    font-weight: bold;
+    width: 150px;
+    color: #555;
+}
+
+.profile-view .profile-field span {
+    flex: 1;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.edit-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+.deactivate-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.deactivate-button:hover {
+    background-color: #d32f2f;
+}
+
+.profile-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.profile-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.profile-form input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.save-button {
+    background-color: #2196F3;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #0b7dda;
+}
+
+.save-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.cancel-button {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.cancel-button:hover {
+    background-color: #ddd;
+}
+
+.error-message {
+    color: #d32f2f;
+    background-color: #fdecea;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    color: #388e3c;
+    background-color: #e8f5e9;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
