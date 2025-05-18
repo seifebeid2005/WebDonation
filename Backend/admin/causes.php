@@ -56,7 +56,11 @@ try {
         $end_date = $data['end_date'] ?? null;
         $is_featured = $data['is_featured'] ?? 0;
         $is_active = $data['is_active'] ?? 1;
+        $allowed_statuses = ['pending', 'active', 'closed'];
         $status = $data['status'] ?? 'pending';
+        if (!in_array($status, $allowed_statuses)) {
+            $status = 'pending';
+        }
         $stmt->bind_param("ssssddssssiis",
             $title, $description, $short_description, $image_url, $goal_amount, $raised_amount, $currency, $category, $start_date, $end_date, $is_featured, $is_active, $status
         );
@@ -82,8 +86,12 @@ try {
         $end_date = $data['end_date'] ?? null;
         $is_featured = $data['is_featured'] ?? 0;
         $is_active = $data['is_active'] ?? 1;
+        $allowed_statuses = ['pending', 'active', 'closed'];
         $status = $data['status'] ?? 'pending';
-        $stmt->bind_param("ssssddssssiiis",
+        if (!in_array($status, $allowed_statuses)) {
+            $status = 'pending';
+        }
+        $stmt->bind_param("ssssddssssiisi",
             $title, $description, $short_description, $image_url, $goal_amount, $raised_amount, $currency, $category, $start_date, $end_date, $is_featured, $is_active, $status, $id
         );
         return $stmt->execute();

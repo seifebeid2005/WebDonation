@@ -11,7 +11,7 @@ header("Access-Control-Allow-Methods: GET, POST");
 
 $host = "localhost";
 $user = "root";
-$password = "";
+$password = "root";
 $database = "webdonation";
 
 $conn = new mysqli($host, $user, $password, $database);

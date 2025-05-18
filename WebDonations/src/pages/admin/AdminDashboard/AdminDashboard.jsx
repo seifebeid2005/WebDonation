@@ -87,47 +87,21 @@ function AdminDashboard() {
   const fetchCauses = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(API_BASE_URL, {
-        withCredentials: true,
-      });
-      
-      // Handle string response (remove BOM if present)
+      const response = await axios.get(API_BASE_URL, { withCredentials: true });
       let responseData = response.data;
       if (typeof responseData === 'string') {
         responseData = responseData.replace(/^\uFEFF/, '');
         responseData = JSON.parse(responseData);
       }
-      
       if (responseData.success === false) {
         throw new Error(responseData.message || 'Failed to fetch causes');
       }
-      
-      // Transform the data to match our frontend structure
-      const causesData = responseData.data || responseData;
-      const transformedCauses = causesData.map(cause => ({
-        id: cause.id,
-        title: cause.title,
-        category: cause.category || 'general',
-        goalAmount: parseFloat(cause.goal_amount),
-        raisedAmount: parseFloat(cause.current_amount || 0),
-        currency: "USD",
-        isActive: cause.status === 'accepted',
-        isFeatured: cause.is_featured === 1,
-        createdAt: new Date(cause.created_at),
-        imageUrl: cause.image_url || "",
-        progressPercentage: cause.goal_amount ? (cause.current_amount / cause.goal_amount) * 100 : 0,
-        shortDescription: cause.description,
-        description: cause.description,
-        startDate: cause.start_date,
-        endDate: cause.end_date,
-      }));
-      
-      setCauses(transformedCauses);
-      setAlert({ type: "", message: "" }); // Clear any existing alerts
+      // Store backend field names directly
+      setCauses(responseData.data || []);
+      setAlert({ type: "", message: "" });
     } catch (error) {
-      console.error('Error fetching causes:', error);
       setAlert({ type: "error", message: error.message || "Failed to fetch causes. Please try again." });
-      setCauses([]); // Clear causes on error
+      setCauses([]);
     } finally {
       setLoading(false);
     }
@@ -163,21 +137,21 @@ function AdminDashboard() {
     setModalMode("edit");
     setEditingCause(cause);
     setForm({
-      title: cause.title,
-      description: cause.description,
+      title: cause.title || '',
+      description: cause.description || '',
       short_description: cause.short_description || '',
       image_url: cause.image_url || '',
-      goalAmount: cause.goal_amount,
-      raisedAmount: cause.raised_amount,
+      goal_amount: cause.goal_amount !== undefined ? cause.goal_amount : '',
+      raised_amount: cause.raised_amount !== undefined ? cause.raised_amount : '',
       currency: cause.currency || 'USD',
       category: cause.category || '',
-      startDate: cause.start_date || '',
-      endDate: cause.end_date || '',
-      isFeatured: cause.is_featured,
-      isActive: cause.is_active,
-      status: cause.status,
-      createdAt: cause.created_at ? formatDate(cause.created_at) : '',
-      updatedAt: cause.updated_at ? formatDate(cause.updated_at) : '',
+      start_date: cause.start_date || '',
+      end_date: cause.end_date || '',
+      is_featured: cause.is_featured !== undefined ? cause.is_featured : 0,
+      is_active: cause.is_active !== undefined ? cause.is_active : 1,
+      status: ['pending', 'active', 'closed'].includes(cause.status) ? cause.status : 'pending',
+      created_at: cause.created_at ? formatDate(cause.created_at) : '',
+      updated_at: cause.updated_at ? formatDate(cause.updated_at) : '',
     });
     setShowModal(true);
   };
@@ -201,7 +175,7 @@ function AdminDashboard() {
   // Add/Edit submit
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title || !form.goalAmount) {
+    if (!form.title || !form.goal_amount) {
       setAlert({ type: "error", message: "Please fill required fields (title, goal amount)." });
       return;
     }
@@ -212,8 +186,8 @@ function AdminDashboard() {
         description: form.description,
         short_description: form.short_description,
         image_url: form.image_url,
-        goal_amount: parseFloat(form.goalAmount),
-        raised_amount: parseFloat(form.raisedAmount) || 0,
+        goal_amount: parseFloat(form.goal_amount),
+        raised_amount: parseFloat(form.raised_amount) || 0,
         currency: form.currency,
         category: form.category,
         start_date: form.startDate || null,
@@ -347,8 +321,8 @@ function AdminDashboard() {
 
   // Progress percent helper
   const getProgress = (cause) =>
-    cause.goalAmount
-      ? Math.min(100, (cause.raisedAmount / cause.goalAmount) * 100)
+    cause.goal_amount
+      ? Math.min(100, (cause.raised_amount / cause.goal_amount) * 100)
       : 0;
 
   // Modal overlay click
@@ -512,10 +486,10 @@ function AdminDashboard() {
                         </span>
                       </td>
                       <td>
-                        {formatCurrency(cause.goalAmount, cause.currency)}
+                        {formatCurrency(cause.goal_amount, cause.currency)}
                       </td>
                       <td>
-                        {formatCurrency(cause.raisedAmount, cause.currency)}
+                        {formatCurrency(cause.raised_amount, cause.currency)}
                       </td>
                       <td>
                         <div className="progress-container">
@@ -613,12 +587,12 @@ function AdminDashboard() {
                   <input type="text" id="image_url" name="image_url" value={form.image_url || ""} onChange={handleFormChange} />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="goalAmount">Goal Amount</label>
-                  <input type="number" id="goalAmount" name="goalAmount" step="0.01" min="0" required value={form.goalAmount || ""} onChange={handleFormChange} />
+                  <label htmlFor="goal_amount">Goal Amount</label>
+                  <input type="number" id="goal_amount" name="goal_amount" step="0.01" min="0" required value={form.goal_amount || ""} onChange={handleFormChange} />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="raisedAmount">Raised Amount</label>
-                  <input type="number" id="raisedAmount" name="raisedAmount" step="0.01" min="0" value={form.raisedAmount || ""} onChange={handleFormChange} />
+                  <label htmlFor="raised_amount">Raised Amount</label>
+                  <input type="number" id="raised_amount" name="raised_amount" step="0.01" min="0" value={form.raised_amount || ""} onChange={handleFormChange} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="currency">Currency</label>
