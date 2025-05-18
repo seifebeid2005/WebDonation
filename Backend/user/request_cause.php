@@ -28,6 +28,9 @@ try {
         case 'create':
             createCauseRequest($conn, $data);
             break;
+            case 'getByUserId':
+            getCauseRequestByUserId($conn);
+            break;
         case 'update':
             updateCauseRequest($conn, $data);
             break;
@@ -238,6 +241,45 @@ function deleteCauseRequest($con, $data) {
                 http_response_code(404);
                 echo json_encode(["success" => false, "message" => "Cause request not found"]);
             }
+        } else {
+            http_response_code(500);
+            echo json_encode(["success" => false, "message" => "Database error"]);
+        }
+        $stmt->close();
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "message" => "Server error",
+            "error" => $e->getMessage()
+        ]);
+    }
+}
+
+// 6. Get cause requests by user id
+function getCauseRequestByUserId($con) {
+    try {
+        if (empty($_SESSION['user_id'])) {
+            http_response_code(401);
+            echo json_encode(["success" => false, "message" => "Not authenticated"]);
+            return;
+        }
+        $userId = intval($_SESSION['user_id']);
+        $query = "SELECT * FROM cause_requests WHERE user_id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $causes = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $causes[] = $row;
+            }
+            echo json_encode([
+                "success" => true,
+                "causes" => $causes,
+                "message" => "Cause requests retrieved successfully"
+            ]);
         } else {
             http_response_code(500);
             echo json_encode(["success" => false, "message" => "Database error"]);

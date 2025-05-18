@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./Home.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
-import { getAllCauseRequests } from "../../../functions/user/causes";
+import { getAllCauseRequests } from "../../../functions/user/RegquestCauses";
 // Dummy team data
 const TEAM_MEMBERS = [
   {

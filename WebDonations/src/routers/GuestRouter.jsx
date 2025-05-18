@@ -14,17 +14,19 @@ import ContactUs from "../pages/public/Contact/Contact";
 const GuestRouter = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/about-us" element={<AboutPage />} />
+      {/* Auth pages */}
       <Route path="/login" element={<Userlogin />} />
       <Route path="/register" element={<UserRegister />} />
+      {/* Admin auth Pages */}
       <Route path="/admin-signin" element={<AdminSignIn />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/admin-users" element={<AdminUsers />} />
-      <Route path="/causes" element={<FeaturedCauses />} />
-      <Route path="/RequestAddingCause" element={<RequestAddingCause />} />
+      {/* Public pages */}
+      <Route path="*" element={<HomePage />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/about-us" element={<AboutPage />} />
       <Route path="/contact" element={<ContactUs />} />
-      {/* Add more guest routes here */}
+      <Route path="/causes" element={<FeaturedCauses />} />
     </Routes>
   </BrowserRouter>
 );

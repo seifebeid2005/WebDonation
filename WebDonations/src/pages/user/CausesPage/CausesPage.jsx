@@ -1,50 +1,61 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./CausesPage.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
-
-// Example data structure for a cause
-const exampleCauses = [
-  {
-    id: 1,
-    title: "Clean Water for All",
-    shortDescription: "Help bring clean water to rural villages.",
-    category: "Health",
-    imageUrl:
-      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=700&q=80",
-    currency: "USD",
-    raisedAmount: 3500,
-    goalAmount: 10000,
-    progressPercentage: 35,
-    endDate: "2025-08-01",
-    donorCount: 44,
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "School Supplies Drive",
-    shortDescription: "Provide back-to-school kits for children.",
-    category: "Education",
-    imageUrl:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=700&q=80",
-    currency: "USD",
-    raisedAmount: 5000,
-    goalAmount: 5000,
-    progressPercentage: 100,
-    endDate: "2025-09-15",
-    donorCount: 81,
-    featured: false,
-  },
-];
+import { getAllCauses } from "../../../functions/user/causes";
 
 const exampleUser = {
   id: 1,
   name: "Jane Doe",
 };
 
-function FeaturedCauses({ causes = exampleCauses, user = exampleUser }) {
+function FeaturedCauses({ user = exampleUser }) {
   const featuredRef = useRef(null);
   const whyDonateRef = useRef(null);
+
+  // Dynamic state for causes
+  const [causes, setCauses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    // Fetch causes from backend
+    async function fetchCauses() {
+      setLoading(true);
+      setError("");
+      try {
+        const data = await getAllCauses();
+        // Map backend fields to UI fields if needed
+        const mapped = (data || []).map((c) => ({
+          id: Number(c.id),
+          title: c.title,
+          shortDescription:
+            c.short_description ||
+            c.shortDescription ||
+            c.description?.substring(0, 120) ||
+            "",
+          category: c.category,
+          imageUrl: c.image_url,
+          currency: c.currency || "USD",
+          raisedAmount: Number(c.raised_amount || 0),
+          goalAmount: Number(c.goal_amount || 0),
+          progressPercentage:
+            c.goal_amount > 0
+              ? Math.min(100, (c.raised_amount / c.goal_amount) * 100)
+              : 0,
+          endDate: c.end_date,
+          donorCount: c.donor_count || 0,
+          featured:
+            c.is_featured === "1" || c.is_featured === 1 || c.featured === true,
+        }));
+        setCauses(mapped);
+      } catch (err) {
+        setError(err.message || "Failed to load causes.");
+      }
+      setLoading(false);
+    }
+    fetchCauses();
+  }, []);
 
   useEffect(() => {
     const revealElements = [featuredRef.current, whyDonateRef.current].filter(
@@ -100,7 +111,18 @@ function FeaturedCauses({ causes = exampleCauses, user = exampleUser }) {
               </p>
             </div>
             <div className="cause-grid">
-              {causes && causes.length ? (
+              {loading ? (
+                <div className="empty-state">
+                  <i className="fas fa-spinner fa-spin empty-icon"></i>
+                  <h3>Loading Causes...</h3>
+                </div>
+              ) : error ? (
+                <div className="empty-state">
+                  <i className="fas fa-exclamation-circle empty-icon"></i>
+                  <h3>Failed to load causes</h3>
+                  <p>{error}</p>
+                </div>
+              ) : causes && causes.length ? (
                 causes.map((cause) => (
                   <div
                     className={

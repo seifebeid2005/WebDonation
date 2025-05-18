@@ -1,15 +1,16 @@
 import { BrowserRouter } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GuestRouter from "./routers/GuestRouter";
 import UserRouter from "./routers/UserRouter";
 import AdminRouter from "./routers/AdminRouter";
 import "./App.css";
-import { useEffect } from "react";
 import { getUserId } from "./functions/user/auth";
+
 const App = () => {
-  const [role, setRole] = useState("guest"); 
+  const [role, setRole] = useState("guest");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -23,6 +24,7 @@ const App = () => {
         setRole("guest");
         setIsLoggedIn(false);
       }
+      setLoading(false);
     };
     fetchUserId();
   }, []);

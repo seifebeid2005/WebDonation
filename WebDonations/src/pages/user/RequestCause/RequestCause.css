@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   padding: 40px 10px;
   font-family: "Poppins", Arial, sans-serif;
 }
@@ -129,11 +130,13 @@
   border: none;
   border-radius: 9px;
   padding: 12px 0;
-  min-width: 180px;
+  width: 220px;
+  height: 50px;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
   box-shadow: 0 4px 18px rgba(67, 97, 238, 0.12);
   display: flex;
+  text-align: center;
   align-items: center;
   justify-content: center;
   gap: 8px;
