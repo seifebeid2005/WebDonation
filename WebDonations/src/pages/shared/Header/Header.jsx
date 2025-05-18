@@ -84,7 +84,7 @@ const Header = ({ activePage }) => {
               ) : (
                 <li>
                   <Link
-                    to="/auth"
+                    to="/login"
                     className={activePage === "login" ? "active" : ""}
                   >
                     Login
