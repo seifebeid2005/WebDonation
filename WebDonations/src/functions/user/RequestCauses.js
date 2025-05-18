@@ -84,6 +84,5 @@ export async function deleteCauseRequest(id) {
 }
 //getByUserId
 export async function getCauseRequestByUserId() {
-  if (!user_id) throw new Error("Missing user_id");
-  return apiRequest({ action: "getByUserId", user_id });
+  return apiRequest({ action: "getByUserId" });
 }

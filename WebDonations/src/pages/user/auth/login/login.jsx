@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./login.css";
 import { login } from "../../../../functions/user/auth"; // Adjust the import path as necessary
+import Loader from "../../../shared/Loader/Loader";
+import Header from "../../../shared/Header/Header";
+import Footer from "../../../shared/Footer/Footer";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -32,35 +35,39 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit} autoComplete="off">
-        <h2>Login</h2>
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            type="email"
-            autoComplete="username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="input-group">
-          <label>Password</label>
-          <input
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <div className="error-msg">{error}</div>}
-        <button type="submit">Login</button>
-        <div className="switch-link">
-          Don't have an account? <a href="/register">Register</a>
-        </div>
-      </form>
-    </div>
+    <>
+      <Header />
+      <div className="login-container">
+        <form className="login-form" onSubmit={handleSubmit} autoComplete="off">
+          <h2>Login</h2>
+          <div className="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              autoComplete="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <div className="error-msg">{error}</div>}
+          <button type="submit">Login</button>
+          <div className="switch-link">
+            Don't have an account? <a href="/register">Register</a>
+          </div>
+        </form>
+      </div>
+      <Footer />
+    </>
   );
 }

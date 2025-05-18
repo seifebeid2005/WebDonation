@@ -55,7 +55,7 @@ export async function register({ name, email, password }) {
 export async function logout() {
   return apiRequest(API_URL_LOGOUT, {});
 }
-
+ // Check if user is logged in
 export async function getUserId() {
   return apiRequest(API_GET_USER_ID, {});
 }

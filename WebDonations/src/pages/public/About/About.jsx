@@ -144,7 +144,7 @@ const AnimatedSection = ({ children, className }) => {
   );
 };
 
-export default function AboutPage() {
+export default function AboutPage({ user }) {
   // Implement smooth scrolling
   useEffect(() => {
     // Smooth scroll function
@@ -178,7 +178,7 @@ export default function AboutPage() {
 
   return (
     <div className="about-page">
-      <Header activePage={"about"} />
+      <Header activePage={"about"} user={user} />
 
       {/* Hero Section */}
       <section className="hero-section">

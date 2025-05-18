@@ -5,11 +5,11 @@ import Header from "../../shared/Header/Header";
 import {
   createCauseRequest,
   getAllCauseRequests,
-} from "../../../functions/user/RegquestCauses";
+} from "../../../functions/user/RequestCauses";
 
-export default function RequestAddingCause({ userId = "" }) {
+export default function RequestAddingCause({ user }) {
   const [form, setForm] = useState({
-    user_id: userId,
+    user_id: user,
     title: "",
     description: "",
     image_url: "",
@@ -88,7 +88,7 @@ export default function RequestAddingCause({ userId = "" }) {
       });
       setSubmitted(true);
       setForm({
-        user_id: userId,
+        user_id: user,
         title: "",
         description: "",
         image_url: "",
@@ -108,7 +108,7 @@ export default function RequestAddingCause({ userId = "" }) {
 
   return (
     <>
-      <Header />
+      <Header user={user} />
       <div className="request-cause-container">
         <div className="request-cause-card">
           <h2 className="request-cause-title">

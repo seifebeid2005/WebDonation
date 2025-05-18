@@ -14,3 +14,10 @@ export async function getAllCauses() {
   }
   return data.data; // Returns array of causes
 }
+
+// Get one cause by id (GET request, client side filter)
+export async function getCauseById(id) {
+  if (!id) throw new Error("No cause id provided");
+  const allCauses = await getAllCauses();
+  return allCauses.find((cause) => String(cause.id) === String(id)) || null;
+}

@@ -1,3 +1,3 @@
-const APIURL = "http://localhost:8888/webdonation/backend/";
+const APIURL = "http://localhost/webdonation/backend/";
 
 export default APIURL;

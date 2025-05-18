@@ -5,41 +5,46 @@ import UserRouter from "./routers/UserRouter";
 import AdminRouter from "./routers/AdminRouter";
 import "./App.css";
 import { getUserId } from "./functions/user/auth";
+import Loader from "./pages/shared/Loader/Loader";
 
 const App = () => {
   const [role, setRole] = useState("guest");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      const response = await getUserId();
-      if (response.status) {
-        const userId = response.user_id;
-        setUserId(userId);
-        // Check if the user is an admin
-        if (userId === 1) { // Assuming 1 is the admin ID, adjust as needed
-          setRole("admin");
-        } else {
+    const checkUserSession = async () => {
+      try {
+        const response = await getUserId();
+        console.log("User session response:", response);
+        if (response.status === "success") {
+          setUserId(response.user_id);
+          setRole(response.role);
           setRole("user");
+        } else {
+          setRole("guest");
         }
-        setIsLoggedIn(true);
-      } else {
+      } catch (error) {
+        console.error("Error checking user session:", error);
         setRole("guest");
-        setIsLoggedIn(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    fetchUserId();
+
+    checkUserSession();
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (role === "guest") {
     return <GuestRouter />;
   }
   if (role === "user") {
     console.log("user is logged in", userId);
-    return <UserRouter />;
+    return <UserRouter user={userId} />;
   }
   if (role === "admin") {
     console.log("admin is logged in", userId);

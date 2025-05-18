@@ -22,16 +22,16 @@
   font-weight: 700;
   letter-spacing: 1px;
 }
-.input-group {
+.login-container .input-group {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
-.input-group label {
+.login-container .input-group label {
   font-size: 1em;
   color: #234c63;
 }
-.input-group input {
+.login-container .input-group input {
   padding: 10px 12px;
   border: 1.5px solid #dbeafe;
   border-radius: 6px;
@@ -39,7 +39,7 @@
   outline: none;
   transition: border 0.2s;
 }
-.input-group input:focus {
+.login-container .input-group input:focus {
   border-color: #2c5364;
 }
 .error-msg {

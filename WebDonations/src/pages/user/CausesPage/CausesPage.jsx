@@ -4,12 +4,7 @@ import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
 import { getAllCauses } from "../../../functions/user/causes";
 
-const exampleUser = {
-  id: 1,
-  name: "Jane Doe",
-};
-
-function FeaturedCauses({ user = exampleUser }) {
+function FeaturedCauses({ user }) {
   const featuredRef = useRef(null);
   const whyDonateRef = useRef(null);
 
@@ -78,7 +73,7 @@ function FeaturedCauses({ user = exampleUser }) {
 
   return (
     <>
-      <Header />
+      <Header user={user} />
       <div className="causes-hero">
         <div className="causes-hero-overlay" />
         <div className="causes-hero-content">

@@ -12,7 +12,7 @@ import "./Contact.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
 
-const ContactPro = () => {
+const ContactPro = ({ user }) => {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -131,7 +131,7 @@ const ContactPro = () => {
 
   return (
     <>
-      <Header activePage={"about"} />
+      <Header activePage={"about"} user={user} />
       <div className="cpro-container">
         {/* Page Header */}
         <main className="cpro-main">

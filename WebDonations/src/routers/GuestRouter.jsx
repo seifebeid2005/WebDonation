@@ -22,7 +22,6 @@ const GuestRouter = () => (
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/admin-users" element={<AdminUsers />} />
       {/* Public pages */}
-      <Route path="*" element={<HomePage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="/about-us" element={<AboutPage />} />
       <Route path="/contact" element={<ContactUs />} />

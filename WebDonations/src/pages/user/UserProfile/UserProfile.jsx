@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { getProfile, updateProfile } from "../../../functions/user/profile";
+import { getProfile } from "../../../functions/user/profile";
+import { logout } from "../../../functions/user/auth";
 import "./UserProfile.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
-
+import Loader from "../../shared/Loader/Loader";
 const UserProfile = () => {
   const [profile, setProfile] = useState({
     name: "",
@@ -33,8 +34,13 @@ const UserProfile = () => {
     fetchProfile();
   }, []);
 
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = "/login";
+  };
+
   if (isLoading && !profile.name && !profile.email) {
-    return <div className="loading">Loading profile...</div>;
+    return <Loader />;
   }
 
   if (error) {
@@ -43,7 +49,7 @@ const UserProfile = () => {
 
   return (
     <>
-      <Header />
+      <Header user={profile} />
       <div className="profile-container">
         <h2>User Profile</h2>
         <div className="profile-view">
@@ -76,6 +82,9 @@ const UserProfile = () => {
             </span>
           </div>
         </div>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
       <Footer />
     </>

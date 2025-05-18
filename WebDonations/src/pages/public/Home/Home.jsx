@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import "./Home.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
-import { getAllCauseRequests } from "../../../functions/user/RegquestCauses";
+import { getAllCauseRequests } from "../../../functions/user/RequestCauses";
 import HomeImage from "../../../assets/hom.webp";
 // Team data
 const TEAM_MEMBERS = [
@@ -117,7 +117,7 @@ function AnimatedCounter({ value, title, icon }) {
   );
 }
 
-export default function Home() {
+export default function Home({ user }) {
   const [activePlan, setActivePlan] = useState("monthly");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [donationAmount, setDonationAmount] = useState("100");
@@ -227,7 +227,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <Header activePage={"home"} />
+      <Header activePage={"home"} user={user} />
 
       {/* Hero Section */}
       <section className="hero-section" ref={heroRef}>
