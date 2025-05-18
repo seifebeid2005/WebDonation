@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./Home.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
-
+import { getAllCauseRequests } from "../../../functions/user/causes";
 // Dummy team data
 const TEAM_MEMBERS = [
   {
@@ -36,9 +36,20 @@ const TEAM_MEMBERS = [
     img: "https://firebasestorage.googleapis.com/v0/b/readspace-b5434.appspot.com/o/pic%2FAbdullah.jpeg?alt=media&token=0995399d-643b-4372-a590-236c1c463d9e",
   },
 ];
-
 function AboutDonations() {
   // Mobile nav state
+  const fetchData = async () => {
+    try {
+      const data = await getAllCauseRequests();
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const [navOpen, setNavOpen] = useState(false);
 
   // Donation form state

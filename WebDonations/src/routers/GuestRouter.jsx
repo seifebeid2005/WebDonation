@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "../pages/public/Home/Home";
 import AboutPage from "../pages/public/About/About";
-import Userlogin from "../pages/user/AuthRedirect/AuthRedirect";
+import Userlogin from "../pages/user/auth/login/login";
+import UserRegister from "../pages/user/auth/register/register";
 import AdminSignIn from "../pages/admin/AdminLogin/AdminLogin";
 import AdminDashboard from "../pages/admin/AdminDashboard/AdminDashboard";
 import AdminUsers from "../pages/admin/AdminUsers/AdminUsers";
@@ -15,7 +16,8 @@ const GuestRouter = () => (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/about-us" element={<AboutPage />} />
-      <Route path="/auth" element={<Userlogin />} />
+      <Route path="/login" element={<Userlogin />} />
+      <Route path="/register" element={<UserRegister />} />
       <Route path="/admin-signin" element={<AdminSignIn />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/admin-users" element={<AdminUsers />} />

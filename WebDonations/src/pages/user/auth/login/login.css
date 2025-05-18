@@ -1,0 +1,74 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f9fb;
+}
+.login-form {
+  width: 350px;
+  padding: 32px 28px;
+  background: #fff;
+  border-radius: 9px;
+  box-shadow: 0 6px 32px rgba(44, 62, 80, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.login-form h2 {
+  text-align: center;
+  color: #234c63;
+  margin-bottom: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.input-group label {
+  font-size: 1em;
+  color: #234c63;
+}
+.input-group input {
+  padding: 10px 12px;
+  border: 1.5px solid #dbeafe;
+  border-radius: 6px;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.2s;
+}
+.input-group input:focus {
+  border-color: #2c5364;
+}
+.error-msg {
+  color: #e74c3c;
+  font-size: 0.98em;
+  text-align: center;
+  margin: 4px 0;
+}
+button[type="submit"] {
+  background: linear-gradient(90deg, #2c5364 0%, #234c63 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 0;
+  font-size: 1.08em;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button[type="submit"]:hover {
+  background: linear-gradient(90deg, #234c63 0%, #2c5364 100%);
+}
+.switch-link {
+  text-align: center;
+  font-size: 0.98em;
+  margin-top: 8px;
+}
+.switch-link a {
+  color: #234c63;
+  text-decoration: underline;
+}
