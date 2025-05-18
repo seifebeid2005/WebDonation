@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Remove any whitespace or BOM before session_start
 ob_start();
 session_start();
