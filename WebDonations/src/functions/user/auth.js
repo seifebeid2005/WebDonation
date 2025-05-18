@@ -1,9 +1,9 @@
-const API_URL_LOGIN = "http://localhost/webDonation/Backend/user/login.php";
-const API_URL_REGISTER =
-  "http://localhost/webDonation/Backend/user/register.php";
-const API_URL_LOGOUT = "http://localhost/webDonation/Backend/user/logout.php";
-const API_GET_USER_ID =
-  "http://localhost/webDonation/Backend/auth/check_session.php";
+import APIURL from "../baseurl.js";
+
+const API_URL_LOGIN = `${APIURL}user/login.php`;
+const API_URL_REGISTER = `${APIURL}user/register.php`;
+const API_URL_LOGOUT = `${APIURL}user/logout.php`;
+const API_GET_USER_ID = `${APIURL}auth/check_session.php`;
 
 // Helper for POST requests with credentials
 async function apiRequest(url, body) {

@@ -1,8 +1,9 @@
-// Base API URL
-const API_URL = "http://localhost/webDonation/Backend/user/request_cause.php";
+import APIURL from "../baseurl.js";
+// Helper function to handle fetch with credentials & JSON
+const API_URL = `${APIURL}user/request_cause.php`;
 // Helper function to handle fetch with credentials & JSON
 async function apiRequest(body) {
-    console.log("API Request Body:", body); // Debugging line
+  console.log("API Request Body:", body); // Debugging line
   const res = await fetch(API_URL, {
     method: "POST",
     credentials: "include",

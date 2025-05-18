@@ -1,106 +1,25 @@
-const API_BASE_URL = "http://localhost/webdonation/backend/user/profile.php";
+import APIURL from "../baseurl.js";
+const API_BASE_URL = `${APIURL}user/profile.php`;
 
-export const getProfile = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
-      method: "GET",
-      credentials: "include", // Crucial for sessions
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+const request = async (method, body = null, action = null) => {
+  const url = API_BASE_URL;
+  const payload = body ? { ...body, action } : { action };
 
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching profile:", error);
-    throw error;
-  }
+  const options = {
+    method,
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    ...(method !== "GET" && { body: JSON.stringify(payload) }),
+  };
+
+  const res = await fetch(url, options);
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.message || "Request failed");
+  return data;
 };
 
-export const updateProfile = async ({ name, email }) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to update profile");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    throw error;
-  }
-};
-
-/**
- * Deactivates the user's account
- * @returns {Promise<Object>} Success message
- */
-export const deactivateAccount = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to deactivate account");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error deactivating account:", error);
-    throw error;
-  }
-};
-
-/**
- * Gets a user's profile by ID (admin function)
- * @param {number} userId - The ID of the user to fetch
- * @returns {Promise<Object>} User profile data
- */
-export const getProfileById = async (userId) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ user_id: userId }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to fetch profile by ID");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching profile by ID:", error);
-    throw error;
-  }
-};
-
-export default {
-  getProfile,
-  updateProfile,
-  deactivateAccount,
-  getProfileById,
-};
+export const getProfile = () => request("POST", null, "getUserData");
+export const updateProfile = (payload) =>
+  request("POST", payload, "changePassword");
