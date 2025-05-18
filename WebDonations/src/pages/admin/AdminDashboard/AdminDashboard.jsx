@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./AdminDashboard.css";
 
-const API_BASE_URL = 'http://localhost:8888/WebDonation/Backend/admin/causes.php';
+const API_BASE_URL =
+  "http://localhost:8888/WebDonation/Backend/admin/causes.php";
 
 // Dummy data for demonstration
 const admin = {
@@ -89,18 +90,21 @@ function AdminDashboard() {
       setLoading(true);
       const response = await axios.get(API_BASE_URL, { withCredentials: true });
       let responseData = response.data;
-      if (typeof responseData === 'string') {
-        responseData = responseData.replace(/^\uFEFF/, '');
+      if (typeof responseData === "string") {
+        responseData = responseData.replace(/^\uFEFF/, "");
         responseData = JSON.parse(responseData);
       }
       if (responseData.success === false) {
-        throw new Error(responseData.message || 'Failed to fetch causes');
+        throw new Error(responseData.message || "Failed to fetch causes");
       }
       // Store backend field names directly
       setCauses(responseData.data || []);
       setAlert({ type: "", message: "" });
     } catch (error) {
-      setAlert({ type: "error", message: error.message || "Failed to fetch causes. Please try again." });
+      setAlert({
+        type: "error",
+        message: error.message || "Failed to fetch causes. Please try again.",
+      });
       setCauses([]);
     } finally {
       setLoading(false);
@@ -115,19 +119,19 @@ function AdminDashboard() {
   const openAddCauseModal = () => {
     setModalMode("add");
     setForm({
-      title: '',
-      description: '',
-      short_description: '',
-      image_url: '',
-      goalAmount: '',
-      raisedAmount: '',
-      currency: 'USD',
-      category: '',
-      startDate: '',
-      endDate: '',
+      title: "",
+      description: "",
+      short_description: "",
+      image_url: "",
+      goalAmount: "",
+      raisedAmount: "",
+      currency: "USD",
+      category: "",
+      startDate: "",
+      endDate: "",
       isFeatured: 0,
       isActive: 1,
-      status: 'pending',
+      status: "pending",
     });
     setEditingCause(null);
     setShowModal(true);
@@ -137,21 +141,24 @@ function AdminDashboard() {
     setModalMode("edit");
     setEditingCause(cause);
     setForm({
-      title: cause.title || '',
-      description: cause.description || '',
-      short_description: cause.short_description || '',
-      image_url: cause.image_url || '',
-      goal_amount: cause.goal_amount !== undefined ? cause.goal_amount : '',
-      raised_amount: cause.raised_amount !== undefined ? cause.raised_amount : '',
-      currency: cause.currency || 'USD',
-      category: cause.category || '',
-      start_date: cause.start_date || '',
-      end_date: cause.end_date || '',
+      title: cause.title || "",
+      description: cause.description || "",
+      short_description: cause.short_description || "",
+      image_url: cause.image_url || "",
+      goal_amount: cause.goal_amount !== undefined ? cause.goal_amount : "",
+      raised_amount:
+        cause.raised_amount !== undefined ? cause.raised_amount : "",
+      currency: cause.currency || "USD",
+      category: cause.category || "",
+      start_date: cause.start_date || "",
+      end_date: cause.end_date || "",
       is_featured: cause.is_featured !== undefined ? cause.is_featured : 0,
       is_active: cause.is_active !== undefined ? cause.is_active : 1,
-      status: ['pending', 'active', 'closed'].includes(cause.status) ? cause.status : 'pending',
-      created_at: cause.created_at ? formatDate(cause.created_at) : '',
-      updated_at: cause.updated_at ? formatDate(cause.updated_at) : '',
+      status: ["pending", "active", "closed"].includes(cause.status)
+        ? cause.status
+        : "pending",
+      created_at: cause.created_at ? formatDate(cause.created_at) : "",
+      updated_at: cause.updated_at ? formatDate(cause.updated_at) : "",
     });
     setShowModal(true);
   };
@@ -176,7 +183,10 @@ function AdminDashboard() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!form.title || !form.goal_amount) {
-      setAlert({ type: "error", message: "Please fill required fields (title, goal amount)." });
+      setAlert({
+        type: "error",
+        message: "Please fill required fields (title, goal amount).",
+      });
       return;
     }
     try {
@@ -201,19 +211,15 @@ function AdminDashboard() {
         causeData.created_at = form.createdAt;
         causeData.updated_at = form.updatedAt;
       }
-      const response = await axios.post(
-        API_BASE_URL,
-        causeData,
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await axios.post(API_BASE_URL, causeData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       let responseData = response.data;
-      if (typeof responseData === 'string') {
-        responseData = responseData.replace(/^\uFEFF/, '');
+      if (typeof responseData === "string") {
+        responseData = responseData.replace(/^\uFEFF/, "");
         try {
           responseData = JSON.parse(responseData);
         } catch (e) {
@@ -221,24 +227,33 @@ function AdminDashboard() {
         }
       }
       if (responseData.success) {
-        setAlert({ 
-          type: "success", 
-          message: responseData.message || (modalMode === "add" ? "Cause added successfully!" : "Cause updated successfully!") 
+        setAlert({
+          type: "success",
+          message:
+            responseData.message ||
+            (modalMode === "add"
+              ? "Cause added successfully!"
+              : "Cause updated successfully!"),
         });
         setShowModal(false);
         fetchCauses();
       } else {
-        throw new Error(responseData.message || "Operation failed. Please try again.");
+        throw new Error(
+          responseData.message || "Operation failed. Please try again."
+        );
       }
     } catch (error) {
-      setAlert({ type: "error", message: error.message || "Failed to save cause. Please try again." });
+      setAlert({
+        type: "error",
+        message: error.message || "Failed to save cause. Please try again.",
+      });
     }
   };
 
   // Delete cause
   const confirmDelete = (id) => {
     if (!id) return;
-    console.log('Confirming delete for ID:', id);
+    console.log("Confirming delete for ID:", id);
     setDeleteId(id);
     setShowDeleteModal(true);
   };
@@ -246,7 +261,7 @@ function AdminDashboard() {
   const handleDelete = async () => {
     const idToDelete = deleteId;
     if (!idToDelete) {
-      console.log('No delete ID set');
+      console.log("No delete ID set");
       return;
     }
 
@@ -254,44 +269,51 @@ function AdminDashboard() {
       const response = await axios.post(
         API_BASE_URL,
         {
-          action: 'delete',
-          id: idToDelete
+          action: "delete",
+          id: idToDelete,
         },
         {
           withCredentials: true,
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
 
       let responseData = response.data;
-      if (typeof responseData === 'string') {
-        responseData = responseData.replace(/^\uFEFF/, '');
+      if (typeof responseData === "string") {
+        responseData = responseData.replace(/^\uFEFF/, "");
         responseData = JSON.parse(responseData);
       }
 
       if (responseData.success) {
         // Update the causes list immediately
-        setCauses(prevCauses => prevCauses.filter(cause => cause.id !== idToDelete));
-        
+        setCauses((prevCauses) =>
+          prevCauses.filter((cause) => cause.id !== idToDelete)
+        );
+
         // Show success message
-        setAlert({ type: "success", message: responseData.message || "Cause deleted successfully!" });
-        
+        setAlert({
+          type: "success",
+          message: responseData.message || "Cause deleted successfully!",
+        });
+
         // Close modal and reset state
         setShowDeleteModal(false);
         setDeleteId(null);
-        
+
         // Refresh the causes list from the server
         await fetchCauses();
       } else {
-        throw new Error(responseData.message || "Failed to delete cause. Please try again.");
+        throw new Error(
+          responseData.message || "Failed to delete cause. Please try again."
+        );
       }
     } catch (error) {
-      console.error('Error deleting cause:', error);
-      setAlert({ 
-        type: "error", 
-        message: error.message || "Failed to delete cause. Please try again." 
+      console.error("Error deleting cause:", error);
+      setAlert({
+        type: "error",
+        message: error.message || "Failed to delete cause. Please try again.",
       });
       // Reset delete state on error
       setShowDeleteModal(false);
@@ -357,6 +379,11 @@ function AdminDashboard() {
             <li className="active">
               <a href="/admin-dashboard">
                 <i className="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="/admin-requests">
+                <i className="fas fa-hand-holding-heart"></i> Donation Requests
               </a>
             </li>
             <li>
@@ -572,55 +599,138 @@ function AdminDashboard() {
               >
                 <div className="form-group">
                   <label htmlFor="title">Title</label>
-                  <input type="text" id="title" name="title" required value={form.title || ""} onChange={handleFormChange} />
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                    value={form.title || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="description">Description</label>
-                  <textarea id="description" name="description" rows={2} value={form.description || ""} onChange={handleFormChange} />
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows={2}
+                    value={form.description || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="short_description">Short Description</label>
-                  <input type="text" id="short_description" name="short_description" value={form.short_description || ""} onChange={handleFormChange} />
+                  <input
+                    type="text"
+                    id="short_description"
+                    name="short_description"
+                    value={form.short_description || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="image_url">Image URL</label>
-                  <input type="text" id="image_url" name="image_url" value={form.image_url || ""} onChange={handleFormChange} />
+                  <input
+                    type="text"
+                    id="image_url"
+                    name="image_url"
+                    value={form.image_url || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="goal_amount">Goal Amount</label>
-                  <input type="number" id="goal_amount" name="goal_amount" step="0.01" min="0" required value={form.goal_amount || ""} onChange={handleFormChange} />
+                  <input
+                    type="number"
+                    id="goal_amount"
+                    name="goal_amount"
+                    step="0.01"
+                    min="0"
+                    required
+                    value={form.goal_amount || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="raised_amount">Raised Amount</label>
-                  <input type="number" id="raised_amount" name="raised_amount" step="0.01" min="0" value={form.raised_amount || ""} onChange={handleFormChange} />
+                  <input
+                    type="number"
+                    id="raised_amount"
+                    name="raised_amount"
+                    step="0.01"
+                    min="0"
+                    value={form.raised_amount || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="currency">Currency</label>
-                  <input type="text" id="currency" name="currency" value={form.currency || "USD"} onChange={handleFormChange} />
+                  <input
+                    type="text"
+                    id="currency"
+                    name="currency"
+                    value={form.currency || "USD"}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="category">Category</label>
-                  <input type="text" id="category" name="category" value={form.category || ""} onChange={handleFormChange} />
+                  <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    value={form.category || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="startDate">Start Date</label>
-                  <input type="date" id="startDate" name="startDate" value={form.startDate || ""} onChange={handleFormChange} />
+                  <input
+                    type="date"
+                    id="startDate"
+                    name="startDate"
+                    value={form.startDate || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="endDate">End Date</label>
-                  <input type="date" id="endDate" name="endDate" value={form.endDate || ""} onChange={handleFormChange} />
+                  <input
+                    type="date"
+                    id="endDate"
+                    name="endDate"
+                    value={form.endDate || ""}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="isFeatured">Is Featured</label>
-                  <input type="checkbox" id="isFeatured" name="isFeatured" checked={!!form.isFeatured} onChange={handleFormChange} />
+                  <input
+                    type="checkbox"
+                    id="isFeatured"
+                    name="isFeatured"
+                    checked={!!form.isFeatured}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="isActive">Is Active</label>
-                  <input type="checkbox" id="isActive" name="isActive" checked={!!form.isActive} onChange={handleFormChange} />
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    name="isActive"
+                    checked={!!form.isActive}
+                    onChange={handleFormChange}
+                  />
                 </div>
                 <div className="form-group">
                   <label htmlFor="status">Status</label>
-                  <select id="status" name="status" value={form.status || "pending"} onChange={handleFormChange}>
+                  <select
+                    id="status"
+                    name="status"
+                    value={form.status || "pending"}
+                    onChange={handleFormChange}
+                  >
                     <option value="pending">Pending</option>
                     <option value="active">Active</option>
                     <option value="closed">Closed</option>
@@ -630,17 +740,41 @@ function AdminDashboard() {
                   <>
                     <div className="form-group">
                       <label htmlFor="createdAt">Created At</label>
-                      <input type="text" id="createdAt" name="createdAt" value={form.createdAt || ""} readOnly />
+                      <input
+                        type="text"
+                        id="createdAt"
+                        name="createdAt"
+                        value={form.createdAt || ""}
+                        readOnly
+                      />
                     </div>
                     <div className="form-group">
                       <label htmlFor="updatedAt">Updated At</label>
-                      <input type="text" id="updatedAt" name="updatedAt" value={form.updatedAt || ""} readOnly />
+                      <input
+                        type="text"
+                        id="updatedAt"
+                        name="updatedAt"
+                        value={form.updatedAt || ""}
+                        readOnly
+                      />
                     </div>
                   </>
                 )}
                 <div className="form-actions">
-                  <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-                  <button type="submit" className="btn btn-primary" id="submitBtn">{modalMode === "add" ? "Add Cause" : "Update Cause"}</button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    id="submitBtn"
+                  >
+                    {modalMode === "add" ? "Add Cause" : "Update Cause"}
+                  </button>
                 </div>
               </form>
             </div>
@@ -651,15 +785,16 @@ function AdminDashboard() {
       {/* Delete Confirm Modal */}
       {showDeleteModal && (
         <div className="modal" onClick={handleOverlayClick}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "500px" }}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: "500px" }}
+          >
             <div className="modal-header">
               <h3>
                 <i className="fas fa-exclamation-triangle"></i> Confirm Deletion
               </h3>
-              <span
-                className="close-btn"
-                onClick={closeModal}
-              >
+              <span className="close-btn" onClick={closeModal}>
                 &times;
               </span>
             </div>

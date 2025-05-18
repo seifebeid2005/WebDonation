@@ -4,10 +4,8 @@ import AdminCauses from "../pages/admin/AdminCauses/AdminCauses";
 import AdminDashboard from "../pages/admin/AdminDashboard/AdminDashboard";
 import AdminUsers from "../pages/admin/AdminUsers/AdminUsers";
 import AdminLogin from "../pages/admin/AdminLogin/AdminLogin";
-import AdminRequests from "../pages/admin/AdminRequests/AdminRequests";
-// import AdminDonations from "../pages/admin/AdminDonations";
-
-// Example admin pages
+import AdminDonationRequests from "../pages/admin/AdminDonationRequests/AdminDonationRequests";
+import AdminRequests from '../pages/admin/AdminRequests/AdminRequests';
 
 const AdminRouter = () => (
   <Router>
@@ -17,10 +15,10 @@ const AdminRouter = () => (
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/users" element={<AdminUsers />} />
       <Route path="/login" element={<AdminLogin />} />
+      <Route path="/donation-requests" element={<AdminDonationRequests />} />
       <Route path="/admin-requests" element={<AdminRequests />} />
-      {/* <Route path="/admin/donations" element={<AdminDonations />} /> */}
     </Routes>
   </Router>
 );
 
-export default AdminRouter;
+export default AdminRouter; 
