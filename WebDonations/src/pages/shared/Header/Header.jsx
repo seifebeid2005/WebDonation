@@ -4,7 +4,7 @@ import "./Header.css";
 import { getUserId } from "../../../functions/user/auth";
 import Loader from "../Loader/Loader";
 
-const Header = () => {
+const Header = ({ activePage }) => {
   const [user, setUser] = useState(null);
   const [isloading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -34,29 +34,61 @@ const Header = () => {
           <div id="navigation">
             <ul id="main-menu">
               <li>
-                <Link to="/">Home</Link>
+                <Link to="/" className={activePage === "home" ? "active" : ""}>
+                  Home
+                </Link>
               </li>
               <li>
-                <Link to="/about-us">About</Link>
+                <Link
+                  to="/about-us"
+                  className={activePage === "about" ? "active" : ""}
+                >
+                  About
+                </Link>
               </li>
               <li>
-                <Link to="/causes">Donate</Link>
+                <Link
+                  to="/causes"
+                  className={activePage === "donate" ? "active" : ""}
+                >
+                  Donate
+                </Link>
               </li>
               <li>
-                <Link to="/contact">Contact</Link>
+                <Link
+                  to="/contact"
+                  className={activePage === "contact" ? "active" : ""}
+                >
+                  Contact
+                </Link>
               </li>
               {user ? (
                 <>
                   <li>
-                    <Link to="/RequestAddingCause">Request Adding</Link>
+                    <Link
+                      to="/RequestAddingCause"
+                      className={activePage === "request" ? "active" : ""}
+                    >
+                      Request Adding
+                    </Link>
                   </li>
                   <li>
-                    <Link to="/profile">Profile</Link>
+                    <Link
+                      to="/profile"
+                      className={activePage === "profile" ? "active" : ""}
+                    >
+                      Profile
+                    </Link>
                   </li>
                 </>
               ) : (
                 <li>
-                  <Link to="/auth">Login</Link>
+                  <Link
+                    to="/auth"
+                    className={activePage === "login" ? "active" : ""}
+                  >
+                    Login
+                  </Link>
                 </li>
               )}
             </ul>
