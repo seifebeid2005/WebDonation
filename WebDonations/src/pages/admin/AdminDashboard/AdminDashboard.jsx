@@ -1,5 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import "./AdminDashboard.css";
+
+const API_BASE_URL = 'http://localhost:8888/WebDonation/Backend/admin/causes.php';
 
 // Dummy data for demonstration
 const admin = {
@@ -64,7 +67,7 @@ const formatCurrency = (amount, currency = "USD") => {
 
 function AdminDashboard() {
   // Dashboard state
-  const [causes, setCauses] = useState(initialCauses);
+  const [causes, setCauses] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add"); // "add" or "edit"
   const [editingCause, setEditingCause] = useState(null);
@@ -73,7 +76,62 @@ function AdminDashboard() {
   const [form, setForm] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
   const [alert, setAlert] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(true);
   const formRef = useRef();
+
+  // Fetch causes on component mount
+  useEffect(() => {
+    fetchCauses();
+  }, []);
+
+  const fetchCauses = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(API_BASE_URL, {
+        withCredentials: true,
+      });
+      
+      // Handle string response (remove BOM if present)
+      let responseData = response.data;
+      if (typeof responseData === 'string') {
+        responseData = responseData.replace(/^\uFEFF/, '');
+        responseData = JSON.parse(responseData);
+      }
+      
+      if (responseData.success === false) {
+        throw new Error(responseData.message || 'Failed to fetch causes');
+      }
+      
+      // Transform the data to match our frontend structure
+      const causesData = responseData.data || responseData;
+      const transformedCauses = causesData.map(cause => ({
+        id: cause.id,
+        title: cause.title,
+        category: cause.category || 'general',
+        goalAmount: parseFloat(cause.goal_amount),
+        raisedAmount: parseFloat(cause.current_amount || 0),
+        currency: "USD",
+        isActive: cause.status === 'accepted',
+        isFeatured: cause.is_featured === 1,
+        createdAt: new Date(cause.created_at),
+        imageUrl: cause.image_url || "",
+        progressPercentage: cause.goal_amount ? (cause.current_amount / cause.goal_amount) * 100 : 0,
+        shortDescription: cause.description,
+        description: cause.description,
+        startDate: cause.start_date,
+        endDate: cause.end_date,
+      }));
+      
+      setCauses(transformedCauses);
+      setAlert({ type: "", message: "" }); // Clear any existing alerts
+    } catch (error) {
+      console.error('Error fetching causes:', error);
+      setAlert({ type: "error", message: error.message || "Failed to fetch causes. Please try again." });
+      setCauses([]); // Clear causes on error
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Stats
   const totalRaised = causes.reduce((sum, c) => sum + c.raisedAmount, 0);
@@ -82,81 +140,203 @@ function AdminDashboard() {
   // Modal open/close
   const openAddCauseModal = () => {
     setModalMode("add");
-    setForm({});
+    setForm({
+      title: '',
+      description: '',
+      short_description: '',
+      image_url: '',
+      goalAmount: '',
+      raisedAmount: '',
+      currency: 'USD',
+      category: '',
+      startDate: '',
+      endDate: '',
+      isFeatured: 0,
+      isActive: 1,
+      status: 'pending',
+    });
     setEditingCause(null);
-    setImagePreview(null);
     setShowModal(true);
   };
+
   const openEditCauseModal = (cause) => {
     setModalMode("edit");
     setEditingCause(cause);
-    setForm({ ...cause });
-    setImagePreview(cause.imageUrl || null);
+    setForm({
+      title: cause.title,
+      description: cause.description,
+      short_description: cause.short_description || '',
+      image_url: cause.image_url || '',
+      goalAmount: cause.goal_amount,
+      raisedAmount: cause.raised_amount,
+      currency: cause.currency || 'USD',
+      category: cause.category || '',
+      startDate: cause.start_date || '',
+      endDate: cause.end_date || '',
+      isFeatured: cause.is_featured,
+      isActive: cause.is_active,
+      status: cause.status,
+      createdAt: cause.created_at ? formatDate(cause.created_at) : '',
+      updatedAt: cause.updated_at ? formatDate(cause.updated_at) : '',
+    });
     setShowModal(true);
   };
-  const closeModal = () => setShowModal(false);
+
+  const closeModal = () => {
+    setShowModal(false);
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
 
   // Form change
   const handleFormChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
-      setForm((f) => ({ ...f, [name]: checked }));
-    } else if (type === "file") {
-      if (files && files[0]) {
-        setForm((f) => ({ ...f, image: files[0] }));
-        const reader = new FileReader();
-        reader.onload = (ev) => setImagePreview(ev.target.result);
-        reader.readAsDataURL(files[0]);
-      }
+      setForm((f) => ({ ...f, [name]: checked ? 1 : 0 }));
     } else {
       setForm((f) => ({ ...f, [name]: value }));
     }
   };
 
   // Add/Edit submit
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Demo validation
-    if (!form.title || !form.shortDescription || !form.goalAmount) {
-      setAlert({ type: "error", message: "Please fill required fields." });
+    if (!form.title || !form.goalAmount) {
+      setAlert({ type: "error", message: "Please fill required fields (title, goal amount)." });
       return;
     }
-    if (modalMode === "add") {
-      setCauses((prev) => [
-        ...prev,
+    try {
+      const causeData = {
+        action: modalMode === "add" ? "add" : "edit",
+        title: form.title,
+        description: form.description,
+        short_description: form.short_description,
+        image_url: form.image_url,
+        goal_amount: parseFloat(form.goalAmount),
+        raised_amount: parseFloat(form.raisedAmount) || 0,
+        currency: form.currency,
+        category: form.category,
+        start_date: form.startDate || null,
+        end_date: form.endDate || null,
+        is_featured: form.isFeatured ? 1 : 0,
+        is_active: form.isActive ? 1 : 0,
+        status: form.status,
+      };
+      if (modalMode === "edit") {
+        causeData.id = editingCause.id;
+        causeData.created_at = form.createdAt;
+        causeData.updated_at = form.updatedAt;
+      }
+      const response = await axios.post(
+        API_BASE_URL,
+        causeData,
         {
-          ...form,
-          id: prev.length ? Math.max(...prev.map((c) => c.id)) + 1 : 1,
-          raisedAmount: 0,
-          createdAt: new Date(),
-          progressPercentage: 0,
-          imageUrl: imagePreview,
-        },
-      ]);
-      setAlert({ type: "success", message: "Cause added successfully!" });
-    } else {
-      setCauses((prev) =>
-        prev.map((c) =>
-          c.id === editingCause.id
-            ? { ...c, ...form, imageUrl: imagePreview }
-            : c
-        )
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
-      setAlert({ type: "success", message: "Cause updated successfully!" });
+      let responseData = response.data;
+      if (typeof responseData === 'string') {
+        responseData = responseData.replace(/^\uFEFF/, '');
+        try {
+          responseData = JSON.parse(responseData);
+        } catch (e) {
+          throw new Error("Server returned invalid response");
+        }
+      }
+      if (responseData.success) {
+        setAlert({ 
+          type: "success", 
+          message: responseData.message || (modalMode === "add" ? "Cause added successfully!" : "Cause updated successfully!") 
+        });
+        setShowModal(false);
+        fetchCauses();
+      } else {
+        throw new Error(responseData.message || "Operation failed. Please try again.");
+      }
+    } catch (error) {
+      setAlert({ type: "error", message: error.message || "Failed to save cause. Please try again." });
     }
-    setShowModal(false);
   };
 
   // Delete cause
   const confirmDelete = (id) => {
+    if (!id) return;
+    console.log('Confirming delete for ID:', id);
     setDeleteId(id);
     setShowDeleteModal(true);
   };
-  const handleDelete = () => {
-    setCauses((prev) => prev.filter((c) => c.id !== deleteId));
-    setShowDeleteModal(false);
-    setAlert({ type: "success", message: "Cause deleted successfully!" });
+
+  const handleDelete = async () => {
+    const idToDelete = deleteId;
+    if (!idToDelete) {
+      console.log('No delete ID set');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        API_BASE_URL,
+        {
+          action: 'delete',
+          id: idToDelete
+        },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      let responseData = response.data;
+      if (typeof responseData === 'string') {
+        responseData = responseData.replace(/^\uFEFF/, '');
+        responseData = JSON.parse(responseData);
+      }
+
+      if (responseData.success) {
+        // Update the causes list immediately
+        setCauses(prevCauses => prevCauses.filter(cause => cause.id !== idToDelete));
+        
+        // Show success message
+        setAlert({ type: "success", message: responseData.message || "Cause deleted successfully!" });
+        
+        // Close modal and reset state
+        setShowDeleteModal(false);
+        setDeleteId(null);
+        
+        // Refresh the causes list from the server
+        await fetchCauses();
+      } else {
+        throw new Error(responseData.message || "Failed to delete cause. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error deleting cause:', error);
+      setAlert({ 
+        type: "error", 
+        message: error.message || "Failed to delete cause. Please try again." 
+      });
+      // Reset delete state on error
+      setShowDeleteModal(false);
+      setDeleteId(null);
+    }
   };
+
+  // Update the delete button in the table
+  const renderDeleteButton = (causeId) => (
+    <button
+      className="btn-action btn-delete"
+      onClick={(e) => {
+        e.stopPropagation(); // Prevent event bubbling
+        confirmDelete(causeId);
+      }}
+    >
+      <i className="fas fa-trash"></i> Delete
+    </button>
+  );
 
   // Remove image preview
   const removeImagePreview = () => {
@@ -173,11 +353,19 @@ function AdminDashboard() {
 
   // Modal overlay click
   const handleOverlayClick = (e) => {
-    if (e.target.className === "modal") {
-      setShowModal(false);
-      setShowDeleteModal(false);
+    if (e.target === e.currentTarget) {
+      closeModal();
     }
   };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading causes...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-container">
@@ -361,16 +549,14 @@ function AdminDashboard() {
                       <td className="actions">
                         <button
                           className="btn-action btn-edit"
-                          onClick={() => openEditCauseModal(cause)}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent event bubbling
+                            openEditCauseModal(cause);
+                          }}
                         >
-                          Edit
+                          <i className="fas fa-edit"></i> Edit
                         </button>
-                        <button
-                          className="btn-action btn-delete"
-                          onClick={() => confirmDelete(cause.id)}
-                        >
-                          Delete
-                        </button>
+                        {renderDeleteButton(cause.id)}
                       </td>
                     </tr>
                   ))
@@ -390,7 +576,7 @@ function AdminDashboard() {
       {/* Add/Edit Cause Modal */}
       {showModal && (
         <div className="modal" onClick={handleOverlayClick}>
-          <div className="modal-content">
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3 id="modalTitle">
                 <i
@@ -409,203 +595,78 @@ function AdminDashboard() {
                 ref={formRef}
                 className="form-grid"
                 onSubmit={handleFormSubmit}
-                encType="multipart/form-data"
               >
                 <div className="form-group">
-                  <label htmlFor="title">
-                    <i className="fas fa-heading"></i> Title
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    required
-                    placeholder="Enter cause title"
-                    value={form.title || ""}
-                    onChange={handleFormChange}
-                  />
+                  <label htmlFor="title">Title</label>
+                  <input type="text" id="title" name="title" required value={form.title || ""} onChange={handleFormChange} />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="shortDescription">
-                    <i className="fas fa-align-left"></i> Short Description
-                  </label>
-                  <input
-                    type="text"
-                    id="shortDescription"
-                    name="shortDescription"
-                    required
-                    maxLength={100}
-                    placeholder="Brief description (max 100 chars)"
-                    value={form.shortDescription || ""}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group full-width">
-                  <label htmlFor="description">
-                    <i className="fas fa-align-left"></i> Full Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows={4}
-                    required
-                    placeholder="Detailed description of the cause"
-                    value={form.description || ""}
-                    onChange={handleFormChange}
-                  />
+                  <label htmlFor="description">Description</label>
+                  <textarea id="description" name="description" rows={2} value={form.description || ""} onChange={handleFormChange} />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="goalAmount">
-                    <i className="fas fa-bullseye"></i> Goal Amount
-                  </label>
-                  <input
-                    type="number"
-                    id="goalAmount"
-                    name="goalAmount"
-                    step="0.01"
-                    min="0"
-                    required
-                    placeholder="0.00"
-                    value={form.goalAmount || ""}
-                    onChange={handleFormChange}
-                  />
+                  <label htmlFor="short_description">Short Description</label>
+                  <input type="text" id="short_description" name="short_description" value={form.short_description || ""} onChange={handleFormChange} />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="currency">
-                    <i className="fas fa-money-bill-wave"></i> Currency
-                  </label>
-                  <select
-                    id="currency"
-                    name="currency"
-                    required
-                    value={form.currency || "USD"}
-                    onChange={handleFormChange}
-                  >
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="EGP">EGP (E£)</option>
+                  <label htmlFor="image_url">Image URL</label>
+                  <input type="text" id="image_url" name="image_url" value={form.image_url || ""} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="goalAmount">Goal Amount</label>
+                  <input type="number" id="goalAmount" name="goalAmount" step="0.01" min="0" required value={form.goalAmount || ""} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="raisedAmount">Raised Amount</label>
+                  <input type="number" id="raisedAmount" name="raisedAmount" step="0.01" min="0" value={form.raisedAmount || ""} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="currency">Currency</label>
+                  <input type="text" id="currency" name="currency" value={form.currency || "USD"} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="category">Category</label>
+                  <input type="text" id="category" name="category" value={form.category || ""} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="startDate">Start Date</label>
+                  <input type="date" id="startDate" name="startDate" value={form.startDate || ""} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="endDate">End Date</label>
+                  <input type="date" id="endDate" name="endDate" value={form.endDate || ""} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="isFeatured">Is Featured</label>
+                  <input type="checkbox" id="isFeatured" name="isFeatured" checked={!!form.isFeatured} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="isActive">Is Active</label>
+                  <input type="checkbox" id="isActive" name="isActive" checked={!!form.isActive} onChange={handleFormChange} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="status">Status</label>
+                  <select id="status" name="status" value={form.status || "pending"} onChange={handleFormChange}>
+                    <option value="pending">Pending</option>
+                    <option value="active">Active</option>
+                    <option value="closed">Closed</option>
                   </select>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="category">
-                    <i className="fas fa-tag"></i> Category
-                  </label>
-                  <select
-                    id="category"
-                    name="category"
-                    required
-                    value={form.category || "education"}
-                    onChange={handleFormChange}
-                  >
-                    <option value="education">Education</option>
-                    <option value="health">Health</option>
-                    <option value="environment">Environment</option>
-                    <option value="animals">Animals</option>
-                    <option value="poverty">Poverty Alleviation</option>
-                    <option value="disaster">Disaster Relief</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div className="form-group" id="imageUploadGroup">
-                  <label htmlFor="image">
-                    <i className="fas fa-image"></i> Cause Image
-                  </label>
-                  <input
-                    type="file"
-                    name="image"
-                    id="image"
-                    accept="image/*"
-                    onChange={handleFormChange}
-                  />
-                  {imagePreview && (
-                    <div
-                      id="imagePreviewContainer"
-                      style={{ display: "block", marginTop: 10 }}
-                    >
-                      <img
-                        id="imagePreview"
-                        src={imagePreview}
-                        alt="Image Preview"
-                        style={{ maxWidth: "200px", maxHeight: "150px" }}
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-small btn-secondary"
-                        onClick={removeImagePreview}
-                        style={{ marginTop: 5 }}
-                      >
-                        Remove Image
-                      </button>
+                {modalMode === "edit" && (
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="createdAt">Created At</label>
+                      <input type="text" id="createdAt" name="createdAt" value={form.createdAt || ""} readOnly />
                     </div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="startDate">
-                    <i className="fas fa-calendar-alt"></i> Start Date
-                  </label>
-                  <input
-                    type="date"
-                    id="startDate"
-                    name="startDate"
-                    required
-                    value={form.startDate || ""}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="endDate">
-                    <i className="fas fa-calendar-alt"></i> End Date
-                  </label>
-                  <input
-                    type="date"
-                    id="endDate"
-                    name="endDate"
-                    value={form.endDate || ""}
-                    onChange={handleFormChange}
-                  />
-                  <small className="form-text">
-                    Leave empty for ongoing causes
-                  </small>
-                </div>
-                <div className="form-group checkbox-group">
-                  <input
-                    type="checkbox"
-                    id="featured"
-                    name="isFeatured"
-                    checked={!!form.isFeatured}
-                    onChange={handleFormChange}
-                  />
-                  <label htmlFor="featured">
-                    <i className="fas fa-star"></i> Featured Cause
-                  </label>
-                </div>
-                <div className="form-group checkbox-group">
-                  <input
-                    type="checkbox"
-                    id="isActive"
-                    name="isActive"
-                    checked={form.isActive !== false}
-                    onChange={handleFormChange}
-                  />
-                  <label htmlFor="isActive">
-                    <i className="fas fa-power-off"></i> Active
-                  </label>
-                </div>
+                    <div className="form-group">
+                      <label htmlFor="updatedAt">Updated At</label>
+                      <input type="text" id="updatedAt" name="updatedAt" value={form.updatedAt || ""} readOnly />
+                    </div>
+                  </>
+                )}
                 <div className="form-actions">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    id="submitBtn"
-                  >
-                    {modalMode === "add" ? "Add Cause" : "Update Cause"}
-                  </button>
+                  <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
+                  <button type="submit" className="btn btn-primary" id="submitBtn">{modalMode === "add" ? "Add Cause" : "Update Cause"}</button>
                 </div>
               </form>
             </div>
@@ -616,14 +677,14 @@ function AdminDashboard() {
       {/* Delete Confirm Modal */}
       {showDeleteModal && (
         <div className="modal" onClick={handleOverlayClick}>
-          <div className="modal-content" style={{ maxWidth: "500px" }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "500px" }}>
             <div className="modal-header">
               <h3>
                 <i className="fas fa-exclamation-triangle"></i> Confirm Deletion
               </h3>
               <span
                 className="close-btn"
-                onClick={() => setShowDeleteModal(false)}
+                onClick={closeModal}
               >
                 &times;
               </span>
@@ -642,7 +703,7 @@ function AdminDashboard() {
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={() => setShowDeleteModal(false)}
+                onClick={closeModal}
               >
                 Cancel
               </button>
@@ -651,7 +712,7 @@ function AdminDashboard() {
                 className="btn btn-danger"
                 onClick={handleDelete}
               >
-                Delete Cause
+                <i className="fas fa-trash"></i> Delete Cause
               </button>
             </div>
           </div>

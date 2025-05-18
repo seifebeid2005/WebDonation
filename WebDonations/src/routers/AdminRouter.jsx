@@ -1,7 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import AdminDashboard from "../pages/admin/AdminDashboard";
-// import AdminUsers from "../pages/admin/AdminUsers";
+import AdminCauses from "../pages/admin/AdminCauses/AdminCauses";
+import AdminDashboard from "../pages/admin/AdminDashboard/AdminDashboard";
+import AdminUsers from "../pages/admin/AdminUsers/AdminUsers";
+import AdminLogin from "../pages/admin/AdminLogin/AdminLogin";
 // import AdminDonations from "../pages/admin/AdminDonations";
 
 // Example admin pages
@@ -9,10 +11,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 const AdminRouter = () => (
   <Router>
     <Routes>
-      {/* <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin-causes" element={<AdminCauses />} />
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/users" element={<AdminUsers />} />
-      <Route path="/admin/donations" element={<AdminDonations />} />
-      Add more admin routes as needed */}
+      <Route path="/login" element={<AdminLogin />} />
+      {/* <Route path="/admin/donations" element={<AdminDonations />} /> */}
     </Routes>
   </Router>
 );

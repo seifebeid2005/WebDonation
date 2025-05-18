@@ -18,7 +18,12 @@ const App = () => {
       if (response.status) {
         const userId = response.user_id;
         setUserId(userId);
-        setRole(userId ? "user" : role);
+        // Check if the user is an admin
+        if (userId === 1) { // Assuming 1 is the admin ID, adjust as needed
+          setRole("admin");
+        } else {
+          setRole("user");
+        }
         setIsLoggedIn(true);
       } else {
         setRole("guest");
@@ -33,10 +38,11 @@ const App = () => {
     return <GuestRouter />;
   }
   if (role === "user") {
-    console.log("user is loged in", userId);
+    console.log("user is logged in", userId);
     return <UserRouter />;
   }
   if (role === "admin") {
+    console.log("admin is logged in", userId);
     return <AdminRouter />;
   }
   return null;

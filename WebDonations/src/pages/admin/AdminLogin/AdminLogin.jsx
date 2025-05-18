@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import "./AdminLogin.css"; // Reuse styles if you want
+import { useNavigate } from "react-router-dom";
 
 const AdminSignIn = () => {
   const [admin, setAdmin] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
     // TODO: Implement admin login logic
-    alert(`Admin Login: ${admin.username}`);
+    // On successful login, redirect to admin dashboard
+    navigate("/admin-dashboard");
   };
 
   return (
