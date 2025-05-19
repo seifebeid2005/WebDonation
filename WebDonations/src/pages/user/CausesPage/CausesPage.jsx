@@ -62,7 +62,7 @@ function FeaturedCauses({ user }) {
         if (!el) return;
         const rect = el.getBoundingClientRect();
         if (rect.top < windowHeight - 100) {
-          el.classList.add("revealed");
+          el.classList.add("fc-revealed");
         }
       });
     }
@@ -72,127 +72,144 @@ function FeaturedCauses({ user }) {
   }, []);
 
   return (
-    <>
-      <Header user={user} />
-      <div className="causes-hero">
-        <div className="causes-hero-overlay" />
-        <div className="causes-hero-content">
-          <h1>
-            Make a <span className="brand-accent">Difference</span> Today
+    <div className="fc-page">
+      <Header activePage={"causes"} user={user} />
+
+      <div className="fc-hero">
+        <div className="fc-hero__overlay" />
+        <div className="fc-hero__content">
+          <h1 className="fc-hero__title">
+            Make a <span className="fc-accent">Difference</span> Today
           </h1>
-          <p>
+          <p className="fc-hero__subtitle">
             Explore featured causes and bring positive change to communities in
             need.
           </p>
+          <a href="#featured-causes" className="fc-btn fc-btn--primary">
+            Explore Causes
+          </a>
         </div>
       </div>
-      <main>
+
+      <main className="fc-main">
         <section
           id="featured-causes"
-          className="featured-causes scroll-reveal"
+          className="fc-section fc-section--featured fc-scroll-reveal"
           ref={featuredRef}
         >
-          <div className="container">
-            <div className="section-header">
-              <h2>
-                <span className="brand-accent">
+          <div className="fc-container">
+            <div className="fc-section__header">
+              <h2 className="fc-section__title">
+                <span className="fc-accent">
                   <i className="fas fa-star"></i>
                 </span>{" "}
                 Featured Causes
               </h2>
-              <div className="underline"></div>
-              <p className="section-desc">
+              <div className="fc-underline"></div>
+              <p className="fc-section__desc">
                 Discover worthy causes that need your support
               </p>
             </div>
-            <div className="cause-grid">
+
+            <div className="fc-cause-grid">
               {loading ? (
-                <div className="empty-state">
-                  <i className="fas fa-spinner fa-spin empty-icon"></i>
-                  <h3>Loading Causes...</h3>
+                <div className="fc-empty-state">
+                  <div className="fc-loader">
+                    <div className="fc-loader__spinner"></div>
+                  </div>
+                  <h3 className="fc-empty-state__title">Loading Causes...</h3>
                 </div>
               ) : error ? (
-                <div className="empty-state">
-                  <i className="fas fa-exclamation-circle empty-icon"></i>
-                  <h3>Failed to load causes</h3>
-                  <p>{error}</p>
+                <div className="fc-empty-state">
+                  <i className="fas fa-exclamation-circle fc-empty-state__icon"></i>
+                  <h3 className="fc-empty-state__title">
+                    Failed to load causes
+                  </h3>
+                  <p className="fc-empty-state__message">{error}</p>
                 </div>
               ) : causes && causes.length ? (
                 causes.map((cause) => (
                   <div
-                    className={
-                      "cause-card modern-shadow" +
-                      (cause.featured ? " cause-card-featured" : "")
-                    }
+                    className={`fc-cause-card ${
+                      cause.featured ? "fc-cause-card--featured" : ""
+                    }`}
                     key={cause.id}
                   >
-                    <div className="cause-image modern-image">
-                      <img src={cause.imageUrl} alt="cause" />
-                      <div className="cause-category badge-pill">
+                    <div className="fc-cause-card__image-wrapper">
+                      <img
+                        src={cause.imageUrl}
+                        alt={cause.title}
+                        className="fc-cause-card__image"
+                      />
+                      <div className="fc-cause-card__category">
                         <span>
                           <i className="fas fa-tag"></i> {cause.category}
                         </span>
                       </div>
                       {cause.featured && (
-                        <div className="cause-badge-featured">
+                        <div className="fc-cause-card__featured-badge">
                           <i className="fas fa-star"></i> Featured
                         </div>
                       )}
                     </div>
-                    <div className="cause-content">
-                      <h3 className="cause-title">{cause.title}</h3>
-                      <p className="cause-description">
+
+                    <div className="fc-cause-card__content">
+                      <h3 className="fc-cause-card__title">{cause.title}</h3>
+                      <p className="fc-cause-card__description">
                         {cause.shortDescription}
                       </p>
-                      <div className="cause-progress-wrap">
-                        <div className="progress-stats">
-                          <span className="amount-raised">
+
+                      <div className="fc-progress">
+                        <div className="fc-progress__stats">
+                          <span className="fc-progress__raised">
                             {cause.currency}{" "}
                             {cause.raisedAmount.toLocaleString()} raised
                           </span>
-                          <span className="goal-amount">
+                          <span className="fc-progress__goal">
                             of {cause.currency}{" "}
                             {cause.goalAmount.toLocaleString()}
                           </span>
                         </div>
-                        <div className="progress-bar-container gradient-bar">
+
+                        <div className="fc-progress__bar-container">
                           <div
-                            className="progress-bar"
+                            className="fc-progress__bar"
                             style={{
                               width: `${cause.progressPercentage}%`,
-                              background:
-                                "linear-gradient(90deg, #7fbbff 0%, #4361ee 100%)",
                             }}
                           ></div>
                         </div>
-                        <div className="progress-percentage">
+
+                        <div className="fc-progress__percentage">
                           <span>
                             {Number(cause.progressPercentage).toFixed(1)}%
                             Complete
                           </span>
                         </div>
                       </div>
-                      <div className="cause-footer-modern">
-                        <div className="cause-meta">
-                          <span>
+
+                      <div className="fc-cause-card__footer">
+                        <div className="fc-cause-card__meta">
+                          <span className="fc-cause-card__date">
                             <i className="far fa-calendar-alt"></i> Ends:{" "}
                             {cause.endDate}
                           </span>
-                          <span>
+                          <span className="fc-cause-card__donors">
                             <i className="fas fa-users"></i> {cause.donorCount}{" "}
                             Donors
                           </span>
                         </div>
+
                         {user ? (
                           <a
-                            href={`cause-details?causeId=${cause.id}`}
-                            className="btn btn-donate-modern"
+                            href={`causesdetails?causeId=${cause.id}`}
+                            className="fc-btn fc-btn--donate"
                           >
-                            <i className="fas fa-heart"></i> Donate
+                            <i className="fas fa-heart"></i> Donate Now
                           </a>
                         ) : (
-                          <div className="login-prompt">
-                            <a href="/auth" className="btn btn-outline-modern">
+                          <div className="fc-login-prompt">
+                            <a href="/login" className="fc-btn fc-btn--outline">
                               <i className="fas fa-lock"></i> Login to Donate
                             </a>
                           </div>
@@ -202,10 +219,10 @@ function FeaturedCauses({ user }) {
                   </div>
                 ))
               ) : (
-                <div className="empty-state">
-                  <i className="fas fa-hands-helping empty-icon"></i>
-                  <h3>No Causes Available</h3>
-                  <p>
+                <div className="fc-empty-state">
+                  <i className="fas fa-hands-helping fc-empty-state__icon"></i>
+                  <h3 className="fc-empty-state__title">No Causes Available</h3>
+                  <p className="fc-empty-state__message">
                     There are no featured causes at the moment. Please check
                     back later.
                   </p>
@@ -214,62 +231,85 @@ function FeaturedCauses({ user }) {
             </div>
           </div>
         </section>
-        <section className="why-donate scroll-reveal" ref={whyDonateRef}>
-          <div className="container">
-            <div className="section-header">
-              <h2>
-                <i className="fas fa-question-circle brand-accent"></i> Why
-                Donate With Us
+
+        <section
+          className="fc-section fc-section--why-donate fc-scroll-reveal"
+          ref={whyDonateRef}
+        >
+          <div className="fc-container">
+            <div className="fc-section__header">
+              <h2 className="fc-section__title">
+                <i className="fas fa-question-circle fc-accent"></i> Why Donate
+                With Us
               </h2>
-              <div className="underline"></div>
+              <div className="fc-underline"></div>
+              <p className="fc-section__desc">
+                Join thousands of donors making a difference through our trusted
+                platform
+              </p>
             </div>
-            <div className="benefits-grid">
-              <div className="benefit-card">
-                <div className="benefit-icon gradient-bg">
+
+            <div className="fc-benefits-grid">
+              <div className="fc-benefit-card">
+                <div className="fc-benefit-card__icon">
                   <i className="fas fa-shield-alt"></i>
                 </div>
-                <h3>Secure Donations</h3>
-                <p>
+                <h3 className="fc-benefit-card__title">Secure Donations</h3>
+                <p className="fc-benefit-card__desc">
                   All transactions are encrypted and secure. Your financial
                   information is never compromised.
                 </p>
               </div>
-              <div className="benefit-card">
-                <div className="benefit-icon gradient-bg">
+
+              <div className="fc-benefit-card">
+                <div className="fc-benefit-card__icon">
                   <i className="fas fa-hand-holding-usd"></i>
                 </div>
-                <h3>Transparent Funding</h3>
-                <p>
+                <h3 className="fc-benefit-card__title">Transparent Funding</h3>
+                <p className="fc-benefit-card__desc">
                   Track where your money goes with regular updates and detailed
                   impact reports.
                 </p>
               </div>
-              <div className="benefit-card">
-                <div className="benefit-icon gradient-bg">
+
+              <div className="fc-benefit-card">
+                <div className="fc-benefit-card__icon">
                   <i className="fas fa-check-circle"></i>
                 </div>
-                <h3>Verified Causes</h3>
-                <p>
+                <h3 className="fc-benefit-card__title">Verified Causes</h3>
+                <p className="fc-benefit-card__desc">
                   We carefully vet every cause to ensure your donation makes a
                   real difference.
                 </p>
               </div>
-              <div className="benefit-card">
-                <div className="benefit-icon gradient-bg">
+
+              <div className="fc-benefit-card">
+                <div className="fc-benefit-card__icon">
                   <i className="fas fa-globe"></i>
                 </div>
-                <h3>Global Impact</h3>
-                <p>
+                <h3 className="fc-benefit-card__title">Global Impact</h3>
+                <p className="fc-benefit-card__desc">
                   Support causes locally or internationally and help create
                   worldwide change.
                 </p>
               </div>
             </div>
+
+            <div className="fc-cta">
+              <h3 className="fc-cta__title">Ready to make a difference?</h3>
+              <a
+                href="#featured-causes"
+                className="fc-btn fc-btn--primary fc-btn--large"
+              >
+                Start Donating Today
+              </a>
+            </div>
           </div>
         </section>
       </main>
+
       <Footer />
-    </>
+    </div>
   );
 }
 

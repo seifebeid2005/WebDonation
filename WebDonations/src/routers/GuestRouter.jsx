@@ -9,6 +9,8 @@ import AdminUsers from "../pages/admin/AdminUsers/AdminUsers";
 import FeaturedCauses from "../pages/user/CausesPage/CausesPage";
 import RequestAddingCause from "../pages/user/RequestCause/RequestCause";
 import ContactUs from "../pages/public/Contact/Contact";
+import CausesDetailsPage from "../pages/user/causesdetails/causesdetails";
+import NotFound from "../pages/shared/NotFound/notfound";
 // Example guest pages
 
 const GuestRouter = () => (
@@ -26,6 +28,8 @@ const GuestRouter = () => (
       <Route path="/about-us" element={<AboutPage />} />
       <Route path="/contact" element={<ContactUs />} />
       <Route path="/causes" element={<FeaturedCauses />} />
+      <Route path="/causesdetails" element={<CausesDetailsPage />} />
+      <Route path="/*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>
 );

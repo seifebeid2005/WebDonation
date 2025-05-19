@@ -107,15 +107,15 @@ export default function CauseDetailsPage() {
   return (
     <>
       <Header />
+      <br />
+      <br />
+      <br />
       <div className="container">
         <div className="cause-detail">
           <img
             className="detail-image"
-            src={
-              cause.image_url ||
-              "https://via.placeholder.com/800x400?text=No+Image"
-            }
-            alt={cause.title}
+            src="https://via.placeholder.com/600x300?text=Coming+Soon"
+            alt="Coming Soon"
           />
           <div className="detail-content">
             <h1 className="detail-title">{cause.title}</h1>

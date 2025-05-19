@@ -131,7 +131,7 @@ const ContactPro = ({ user }) => {
 
   return (
     <>
-      <Header activePage={"about"} user={user} />
+      <Header activePage={"conatct"} user={user} />
       <div className="cpro-container">
         {/* Page Header */}
         <main className="cpro-main">

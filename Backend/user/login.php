@@ -81,7 +81,10 @@ function login($conn, $email, $password) {
                     "id" => $user['id'],
                     "name" => $user['name'],
                     "email" => $user['email'],
-                    "status" => $user['status']
+                    "password_hash" => $user['password_hash'],
+                    "status" => $user['status'],
+                    "created_at" => $user['created_at'],
+                    "updated_at" => $user['updated_at']
                 ]
             ]);
         } else {

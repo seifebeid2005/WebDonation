@@ -910,7 +910,7 @@ export default function Home({ user }) {
                   </div>
 
                   {donationAmount === "custom" && (
-                    <div className="custom-amount-input">
+                    <div className="form-group">
                       <label htmlFor="customAmount">Enter amount (EGP)</label>
                       <input
                         type="text"
