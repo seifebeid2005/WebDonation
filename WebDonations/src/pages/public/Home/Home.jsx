@@ -7,261 +7,11 @@ import Footer from "../../shared/Footer/Footer";
 import { getAllCauseRequests } from "../../../functions/user/RequestCauses";
 import HomeImage from "../../../assets/hom.webp";
 import styled from "styled-components";
+import BackToTopButton from "../../shared/backtotop/BackToTopButton";
+import FancyDonateButton from "../../shared/FancyDonateButton/FancyDonateButton";
+import RotatingWords from "../../shared/RotatingWords/RotatingWords";
 
 
-const BackToTopButton = ({ onClick }) => {
-  return (
-    <BackToTopWrapper >
-      <button className="button" onClick={onClick}>
-        <svg className="svgIcon" viewBox="0 0 384 512">
-          <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
-        </svg>
-      </button>
-    </BackToTopWrapper >
-  );
-};
-
-const BackToTopWrapper  = styled.div`
-  .button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #4361EE; /* changed to your main blue */
-    border: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0px 0px 0px 4px rgba(67, 97, 238, 0.2);
-    cursor: pointer;
-    transition-duration: 0.3s;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .svgIcon {
-    width: 12px;
-    transition-duration: 0.3s;
-  }
-
-  .svgIcon path {
-    fill: white;
-  }
-
-  .button:hover {
-    width: 140px;
-    border-radius: 50px;
-    background-color: #5E7EFF; /* lighter blue on hover */
-    align-items: center;
-  }
-
-  .button:hover .svgIcon {
-    transform: translateY(-200%);
-  }
-
-  .button::before {
-    position: absolute;
-    bottom: -20px;
-    content: "Back to Top";
-    color: white;
-    font-size: 0px;
-  }
-
-  .button:hover::before {
-    font-size: 13px;
-    bottom: unset;
-    transition-duration: 0.3s;
-  }
-`;
-
-const FancyDonateButton = ({ onClick }) => {
-  return (
-    <StyledWrapper>
-      <div className="container-button" onClick={onClick}>
-        <div className="hover bt-1" />
-        <div className="hover bt-2" />
-        <div className="hover bt-3" />
-        <div className="hover bt-4" />
-        <div className="hover bt-5" />
-        <div className="hover bt-6" />
-        <button />
-      </div>
-    </StyledWrapper>
-  );
-};
-
-const StyledWrapper = styled.div`
-  .container-button {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    grid-template-areas: "bt-1 bt-2 bt-3" "bt-4 bt-5 bt-6";
-    position: relative;
-    perspective: 800;
-    padding: 0;
-    width: 135px;
-    height: 47px;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-  }
-
-  .container-button:active {
-    transform: scale(0.95);
-  }
-
-  .hover {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 200;
-  }
-
-  .bt-1 { grid-area: bt-1; }
-  .bt-2 { grid-area: bt-2; }
-  .bt-3 { grid-area: bt-3; }
-  .bt-4 { grid-area: bt-4; }
-  .bt-5 { grid-area: bt-5; }
-  .bt-6 { grid-area: bt-6; }
-
-  .bt-1:hover ~ button {
-    transform: rotateX(15deg) rotateY(-15deg);
-    box-shadow: -2px -2px #1D2C99;
-  }
-  .bt-1:hover ~ button::after {
-    animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: -2px -2px #1D2C99;
-  }
-  .bt-3:hover ~ button {
-    transform: rotateX(15deg) rotateY(15deg);
-    box-shadow: 2px -2px #1D2C99;
-  }
-  .bt-3:hover ~ button::after {
-    animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: 2px -2px #1D2C99;
-  }
-  .bt-4:hover ~ button {
-    transform: rotateX(-15deg) rotateY(-15deg);
-    box-shadow: -2px 2px #1D2C99;
-  }
-  .bt-4:hover ~ button::after {
-    animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: -2px 2px #1D2C99;
-  }
-  .bt-6:hover ~ button {
-    transform: rotateX(-15deg) rotateY(15deg);
-    box-shadow: 2px 2px #1D2C99;
-  }
-  .bt-6:hover ~ button::after {
-    animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: 2px 2px #1D2C99;
-  }
-
-  .hover:hover ~ button::before {
-    background: transparent;
-  }
-
-  .hover:hover ~ button::after {
-    content: "NOW"; /* Hover word */
-    top: -150%;
-    transform: translate(-50%, 0);
-    font-size: 34px;
-    color: #233BBE;
-  }
-
-  button {
-    position: absolute;
-    padding: 0;
-    width: 135px;
-    height: 47px;
-    background: transparent;
-    font-size: 17px;
-    font-weight: 900;
-    border: 3px solid #2A3DCC;
-    border-radius: 12px;
-    transition: all 0.3s ease-in-out;
-  }
-
-  button::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 135px;
-    height: 47px;
-    background-color: #4361EE;
-    border-radius: 12px;
-    transition: all 0.3s ease-in-out;
-    z-index: -1;
-  }
-
-  button::after {
-    content: "Donate"; /* Default word */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 135px;
-    height: 47px;
-    background-color: transparent;
-    font-size: 17px;
-    font-weight: 900;
-    line-height: 47px;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    transition: all 0.3s ease-in-out;
-    z-index: 2;
-  }
-
-  @keyframes shake {
-    0%   { left: 45%; }
-    25%  { left: 54%; }
-    50%  { left: 48%; }
-    75%  { left: 52%; }
-    100% { left: 50%; }
-  }
-`;
-
-
-
-const RotatingWords = styled.span`
-  display: inline-block;
-  height: 1.5em; /* Slightly taller for better spacing */
-  overflow: hidden;
-  position: relative;
-  vertical-align: middle;
-
-  .word {
-    display: block;
-    color: #4361EE;
-    font-weight: bold;
-    animation: spin 6s infinite;
-  }
-
-  /* Remove black bar (the ::after gradient) */
-  &::after {
-    content: none;
-  }
-
-  @keyframes spin {
-    0%, 10% {
-      transform: translateY(0%);
-    }
-    25%, 35% {
-      transform: translateY(-100%);
-    }
-    50%, 60% {
-      transform: translateY(-200%);
-    }
-    75%, 85% {
-      transform: translateY(-300%);
-    }
-    100% {
-      transform: translateY(-400%);
-    }
-  }
-`;
 
 // Team data
 
@@ -479,9 +229,10 @@ export default function Home({ user }) {
     });
   };
 
-  const scrollToSection = (ref) => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-  };
+const scrollToSection = (ref) => {
+  ref.current?.scrollIntoView({ behavior: "smooth" });
+};
+
 
   return (
     <div className="home-container">
@@ -513,17 +264,18 @@ export default function Home({ user }) {
             Join our mission to create lasting positive impact in communities around the world.
           </motion.p>
           <motion.div
-            className="hero-cta"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-             <FancyDonateButton onClick={() => scrollToSection(donateRef)} />
+  className="hero-cta"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.6 }}
+>
+  <FancyDonateButton onClick={() => scrollToSection(donateRef)} />
 
-            <button className="btn-secondary" onClick={() => scrollToSection(aboutRef)}>
-              Learn More
-            </button>
-          </motion.div>
+  <button className="btn-secondary" onClick={() => scrollToSection(aboutRef)}>
+    Learn More
+  </button>
+</motion.div>
+
         </div>
         <div className="hero-overlay"></div>
         <video autoPlay muted loop className="hero-video">
@@ -563,7 +315,8 @@ export default function Home({ user }) {
                 zIndex: 1000,
               }}
             >
-              <BackToTopButton onClick={() => scrollToSection(heroRef)} />
+              <BackToTopButton />
+
             </div>
 
             <div className="about-text">
@@ -620,7 +373,7 @@ export default function Home({ user }) {
             </div>
           </div>
         </div>
-      </section>}
+      </section>
       <section className="impact-section" id="impact" ref={impactRef}>
         <div className="container">
           <div className="section-header">
