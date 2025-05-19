@@ -7,4 +7,5 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: GET, POST");
 //Backend\api\user\donations.php
 include("../config/database.php");
+// get donatuons by user id
 ?>
