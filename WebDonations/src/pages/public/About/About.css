@@ -592,7 +592,8 @@ a {
 
 .impact-stats {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  flex-direction: row;
   gap: 25px;
 }
 

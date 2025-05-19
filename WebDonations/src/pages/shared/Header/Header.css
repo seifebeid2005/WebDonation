@@ -74,3 +74,14 @@
 #main-menu a.current {
   color: #4169e1;
 }
+#header {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+#header.hidden {
+  transform: translateY(-100%);
+}
+
