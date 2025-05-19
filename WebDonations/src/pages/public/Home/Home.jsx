@@ -8,25 +8,24 @@ import { getAllCauseRequests } from "../../../functions/user/RequestCauses";
 import HomeImage from "../../../assets/hom.webp";
 import styled from "styled-components";
 
-
 const BackToTopButton = ({ onClick }) => {
   return (
-    <BackToTopWrapper >
+    <BackToTopWrapper>
       <button className="button" onClick={onClick}>
         <svg className="svgIcon" viewBox="0 0 384 512">
           <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
         </svg>
       </button>
-    </BackToTopWrapper >
+    </BackToTopWrapper>
   );
 };
 
-const BackToTopWrapper  = styled.div`
+const BackToTopWrapper = styled.div`
   .button {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #4361EE; /* changed to your main blue */
+    background-color: #4361ee; /* changed to your main blue */
     border: none;
     font-weight: 600;
     display: flex;
@@ -51,7 +50,7 @@ const BackToTopWrapper  = styled.div`
   .button:hover {
     width: 140px;
     border-radius: 50px;
-    background-color: #5E7EFF; /* lighter blue on hover */
+    background-color: #5e7eff; /* lighter blue on hover */
     align-items: center;
   }
 
@@ -116,44 +115,56 @@ const StyledWrapper = styled.div`
     z-index: 200;
   }
 
-  .bt-1 { grid-area: bt-1; }
-  .bt-2 { grid-area: bt-2; }
-  .bt-3 { grid-area: bt-3; }
-  .bt-4 { grid-area: bt-4; }
-  .bt-5 { grid-area: bt-5; }
-  .bt-6 { grid-area: bt-6; }
+  .bt-1 {
+    grid-area: bt-1;
+  }
+  .bt-2 {
+    grid-area: bt-2;
+  }
+  .bt-3 {
+    grid-area: bt-3;
+  }
+  .bt-4 {
+    grid-area: bt-4;
+  }
+  .bt-5 {
+    grid-area: bt-5;
+  }
+  .bt-6 {
+    grid-area: bt-6;
+  }
 
   .bt-1:hover ~ button {
     transform: rotateX(15deg) rotateY(-15deg);
-    box-shadow: -2px -2px #1D2C99;
+    box-shadow: -2px -2px #1d2c99;
   }
   .bt-1:hover ~ button::after {
     animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: -2px -2px #1D2C99;
+    text-shadow: -2px -2px #1d2c99;
   }
   .bt-3:hover ~ button {
     transform: rotateX(15deg) rotateY(15deg);
-    box-shadow: 2px -2px #1D2C99;
+    box-shadow: 2px -2px #1d2c99;
   }
   .bt-3:hover ~ button::after {
     animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: 2px -2px #1D2C99;
+    text-shadow: 2px -2px #1d2c99;
   }
   .bt-4:hover ~ button {
     transform: rotateX(-15deg) rotateY(-15deg);
-    box-shadow: -2px 2px #1D2C99;
+    box-shadow: -2px 2px #1d2c99;
   }
   .bt-4:hover ~ button::after {
     animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: -2px 2px #1D2C99;
+    text-shadow: -2px 2px #1d2c99;
   }
   .bt-6:hover ~ button {
     transform: rotateX(-15deg) rotateY(15deg);
-    box-shadow: 2px 2px #1D2C99;
+    box-shadow: 2px 2px #1d2c99;
   }
   .bt-6:hover ~ button::after {
     animation: shake 0.5s ease-in-out 0.3s;
-    text-shadow: 2px 2px #1D2C99;
+    text-shadow: 2px 2px #1d2c99;
   }
 
   .hover:hover ~ button::before {
@@ -165,7 +176,7 @@ const StyledWrapper = styled.div`
     top: -150%;
     transform: translate(-50%, 0);
     font-size: 34px;
-    color: #233BBE;
+    color: #233bbe;
   }
 
   button {
@@ -176,7 +187,7 @@ const StyledWrapper = styled.div`
     background: transparent;
     font-size: 17px;
     font-weight: 900;
-    border: 3px solid #2A3DCC;
+    border: 3px solid #2a3dcc;
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
   }
@@ -189,7 +200,7 @@ const StyledWrapper = styled.div`
     transform: translate(-50%, -50%);
     width: 135px;
     height: 47px;
-    background-color: #4361EE;
+    background-color: #4361ee;
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
     z-index: -1;
@@ -215,15 +226,23 @@ const StyledWrapper = styled.div`
   }
 
   @keyframes shake {
-    0%   { left: 45%; }
-    25%  { left: 54%; }
-    50%  { left: 48%; }
-    75%  { left: 52%; }
-    100% { left: 50%; }
+    0% {
+      left: 45%;
+    }
+    25% {
+      left: 54%;
+    }
+    50% {
+      left: 48%;
+    }
+    75% {
+      left: 52%;
+    }
+    100% {
+      left: 50%;
+    }
   }
 `;
-
-
 
 const RotatingWords = styled.span`
   display: inline-block;
@@ -234,7 +253,7 @@ const RotatingWords = styled.span`
 
   .word {
     display: block;
-    color: #4361EE;
+    color: #4361ee;
     font-weight: bold;
     animation: spin 6s infinite;
   }
@@ -245,16 +264,20 @@ const RotatingWords = styled.span`
   }
 
   @keyframes spin {
-    0%, 10% {
+    0%,
+    10% {
       transform: translateY(0%);
     }
-    25%, 35% {
+    25%,
+    35% {
       transform: translateY(-100%);
     }
-    50%, 60% {
+    50%,
+    60% {
       transform: translateY(-200%);
     }
-    75%, 85% {
+    75%,
+    85% {
       transform: translateY(-300%);
     }
     100% {
@@ -510,7 +533,8 @@ export default function Home({ user }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            Join our mission to create lasting positive impact in communities around the world.
+            Join our mission to create lasting positive impact in communities
+            around the world.
           </motion.p>
           <motion.div
             className="hero-cta"
@@ -518,9 +542,12 @@ export default function Home({ user }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-             <FancyDonateButton onClick={() => scrollToSection(donateRef)} />
+            <FancyDonateButton onClick={() => scrollToSection(donateRef)} />
 
-            <button className="btn-secondary" onClick={() => scrollToSection(aboutRef)}>
+            <button
+              className="btn-secondary"
+              onClick={() => scrollToSection(aboutRef)}
+            >
               Learn More
             </button>
           </motion.div>
@@ -569,16 +596,18 @@ export default function Home({ user }) {
             <div className="about-text">
               <h3>Our Mission</h3>
               <p>
-                We believe in creating sustainable change through compassionate action. Our
-                organization is dedicated to addressing the root causes of poverty, inequality,
-                and educational gaps in underserved communities.
+                We believe in creating sustainable change through compassionate
+                action. Our organization is dedicated to addressing the root
+                causes of poverty, inequality, and educational gaps in
+                underserved communities.
               </p>
 
               <h3>Our Approach</h3>
               <p>
-                We take a holistic approach to community development by combining immediate
-                relief with long-term empowerment programs. By partnering with local leaders and
-                organizations, we ensure culturally appropriate and sustainable solutions.
+                We take a holistic approach to community development by
+                combining immediate relief with long-term empowerment programs.
+                By partnering with local leaders and organizations, we ensure
+                culturally appropriate and sustainable solutions.
               </p>
 
               <div className="values-container">
@@ -620,7 +649,7 @@ export default function Home({ user }) {
             </div>
           </div>
         </div>
-      </section>}
+      </section>
       <section className="impact-section" id="impact" ref={impactRef}>
         <div className="container">
           <div className="section-header">
