@@ -9,6 +9,7 @@ import AdminUsers from "../pages/admin/AdminUsers/AdminUsers";
 import FeaturedCauses from "../pages/user/CausesPage/CausesPage";
 import RequestAddingCause from "../pages/user/RequestCause/RequestCause";
 import ContactUs from "../pages/public/Contact/Contact";
+import AdminReport from "../pages/admin/AdminReport/AdminReport";
 // Example guest pages
 
 const GuestRouter = () => (

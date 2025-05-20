@@ -3,49 +3,13 @@ import axios from "axios";
 import "./AdminDashboard.css";
 
 const API_BASE_URL =
-  "http://localhost:8888/WebDonation/Backend/admin/causes.php";
+  "http://localhost/WebDonation/Backend/admin/causes.php";
 
 // Dummy data for demonstration
 const admin = {
   username: "adminuser",
   role: "super_admin",
 };
-const initialCauses = [
-  {
-    id: 1,
-    title: "Clean Water for All",
-    category: "environment",
-    goalAmount: 10000,
-    raisedAmount: 3500,
-    currency: "USD",
-    isActive: true,
-    isFeatured: true,
-    createdAt: new Date("2024-05-01 10:00"),
-    imageUrl: "",
-    progressPercentage: 35,
-    shortDescription: "Bring clean water to remote villages.",
-    description: "Full project details.",
-    startDate: "2024-05-01",
-    endDate: "2024-07-01",
-  },
-  {
-    id: 2,
-    title: "School Supplies Drive",
-    category: "education",
-    goalAmount: 5000,
-    raisedAmount: 5000,
-    currency: "USD",
-    isActive: true,
-    isFeatured: false,
-    createdAt: new Date("2024-04-10 15:30"),
-    imageUrl: "",
-    progressPercentage: 100,
-    shortDescription: "Help provide school supplies.",
-    description: "Full project details.",
-    startDate: "2024-04-10",
-    endDate: "",
-  },
-];
 
 // Helper for formatting date
 const formatDate = (date) => {
