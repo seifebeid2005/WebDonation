@@ -30,18 +30,20 @@ export default function App() {
   }, []);
 
   return (
-    <div className="container">
-      <h2 className="title">🔔 Notifications</h2>
-      {notifications.length === 0 ? (
-        <p className="empty">No notifications yet!</p>
-      ) : (
-        notifications.map((note) => (
-          <div key={note.id} className={`notification ${note.type}`}>
-            <p className="message">{note.message}</p>
-            <p className="date">🕒 {note.created_at}</p>
-          </div>
-        ))
-      )}
+    <div className="notifications-page">
+      <div className="container">
+        <h2 className="title">🔔 Notifications</h2>
+        {notifications.length === 0 ? (
+          <p className="empty">No notifications yet!</p>
+        ) : (
+          notifications.map((note) => (
+            <div key={note.id} className={`notification ${note.type}`}>
+              <p className="message">{note.message}</p>
+              <p className="date">🕒 {note.created_at}</p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
