@@ -9,6 +9,7 @@ import CausesDetailsPage from "../pages/user/causesdetails/causesdetails";
 import RequestAddingCause from "../pages/user/RequestCause/RequestCause";
 import Notifications from "../pages/user/Notifications/Notifications";
 import NotFound from "../pages/shared/NotFound/notfound";
+import ThankYouPage from "../pages/shared/thankspage/thanks";
 const UserRouter = ({ user }) => (
   <Router>
     <Routes>
@@ -28,6 +29,8 @@ const UserRouter = ({ user }) => (
         path="/RequestAddingCause"
         element={<RequestAddingCause user={user} />}
       />
+      <Route path="/thanku" element={<ThankYouPage />} />
+      {/* Notifications */}
       <Route path="/notifications" element={<Notifications />} />
       {/* Redirect to home if no match 404 */}
       <Route path="*" element={<NotFound />} />

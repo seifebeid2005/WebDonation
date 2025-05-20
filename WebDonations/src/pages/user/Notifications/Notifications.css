@@ -1,53 +1,98 @@
-.notifications-page .container {
-  max-width: 500px;
+.notifications .container {
+  max-width: 600px;
   margin: auto;
 }
 
-.notifications-page .title {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #222;
+.notifications.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.notifications-page .notification {
+.badge {
+  background: red;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.filters {
+  margin: 16px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.filters button {
+  background: #e0e0e0;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filters button:hover {
+  background: #c1c1c1;
+}
+
+.notification {
   background: white;
   padding: 16px;
   margin-bottom: 12px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: 0.3s ease;
+  position: relative;
 }
 
-.notifications-page .notification:hover {
+.notification:hover {
   transform: scale(1.02);
 }
 
-.notifications-page .message {
+.notification.read {
+  opacity: 0.6;
+}
+
+.message {
   margin: 0;
   font-size: 16px;
   font-weight: 500;
 }
 
-.notifications-page .date {
+.date {
   font-size: 13px;
   color: #888;
   margin-top: 6px;
 }
 
-/* Different types */
-.notifications-page .success {
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  background: transparent;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.success {
   border-left: 6px solid #4caf50;
 }
 
-.notifications-page .info {
+.info {
   border-left: 6px solid #2196f3;
 }
 
-.notifications-page .error {
+.error {
   border-left: 6px solid #f44336;
 }
 
-.notifications-page .empty {
+.empty {
   text-align: center;
   color: #aaa;
   font-size: 15px;

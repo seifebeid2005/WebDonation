@@ -57,6 +57,8 @@ export default function CauseDetailsPage() {
       };
 
       console.log("Creating payment intent...");
+      // put in the database
+      
       const paymentIntent = await createPaymentIntention({
         user,
         totalAmount: amount, // Note the parameter name change from amount to totalAmount

@@ -12,7 +12,7 @@ import FancyDonateButton from "../../shared/FancyDonateButton/FancyDonateButton"
 import RotatingWords from "../../shared/RotatingWords/RotatingWords";
 import RateUsStars from "../../shared/rateusstars/rateusestars";
 import ProceedToPaymentButton from "../../shared/paymentcoolicon/paymenticon";
-
+import { handleRandomDonation } from "../../../functions/user/donations";
 // Team data
 
 const TEAM_MEMBERS = [
@@ -186,7 +186,7 @@ export default function Home() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDonationSubmit = (e) => {
+  const handleDonationSubmit = async (e) => {
     e.preventDefault();
 
     const finalAmount =
@@ -197,15 +197,15 @@ export default function Home() {
       return;
     }
 
-    // Handle donation submission (would connect to payment gateway)
-    console.log("Donation data:", {
-      ...formData,
-      amount: finalAmount,
-      plan: activePlan,
-    });
+    const user = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+    };
 
-    alert(`Thank you for your ${activePlan} donation of EGP ${finalAmount}!`);
+    // Prepare items
 
+    await handleRandomDonation(user, finalAmount, formData.message);
     // Reset form
     setFormData({
       name: "",
@@ -229,9 +229,6 @@ export default function Home() {
     });
   };
 
-  const scrollToSection = (ref) => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-  };
   const HandleGotoDonate = () => {
     window.location.href = "/causes";
     console.log("donate");
@@ -374,6 +371,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       <section className="impact-section" id="impact" ref={impactRef}>
         <div className="container">
           <div className="section-header">
@@ -634,7 +632,7 @@ export default function Home() {
                   </div>
 
                   {donationAmount === "custom" && (
-                    <div className="custom-amount-input">
+                    <div className="form-group">
                       <label htmlFor="customAmount">Enter amount (EGP)</label>
                       <input
                         type="text"

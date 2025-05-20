@@ -132,7 +132,7 @@ export async function createRandomPaymentIntention({
     items,
     billing_data: billingData,
     special_reference: merchantOrderId,
-    redirection_url: `http://localhost:8080/DonationPlatform/donationresult?type=random&merchantOrderId=${merchantOrderId}`,
+    redirection_url: `http://localhost:5173/thanku?type=random&merchant_order_id=${merchantOrderId}`,
   };
 
   const { status, data } = await postJson(INTENTION_URL, requestBody, {
@@ -140,6 +140,8 @@ export async function createRandomPaymentIntention({
   });
 
   if (status < 400) {
+    // Redirect to the Paymob checkout page if successful
+    window.location.href = `${CHECKOUT_BASE_URL}?publicKey=${PUBLIC_KEY}&clientSecret=${data.client_secret}`;
     return {
       success: true,
       redirectUrl: `${CHECKOUT_BASE_URL}?publicKey=${PUBLIC_KEY}&clientSecret=${data.client_secret}`,
@@ -184,29 +186,6 @@ export async function checkPaymentStatus(merchantOrderId) {
   };
 
   const data = await postJson(INQUIRY_URL, body);
-  return data.success == true;
-}
 
-// Example usage in a component:
-async function handleDonate() {
-  //   const result = await createPaymentIntention({
-  //     user: { name: "John Doe", phone: "01012345678", email: "john@example.com" },
-  //     totalAmount: 200,
-  //     donation: { id: 123, message: "For a good cause" },
-  //     merchantOrderId: "abcde-12345-uuidd",
-  //   });
-  //   if (result.success) {
-  //     console.log("Redirect to:", result.redirectUrl);
-  //   } else {
-  //     console.error("Error creating payment intention:", result.error);
-  //   }
-  const res = await checkPaymentStatus("abcde-12345-uuidd");
-  console.log("Payment status:", res);
-  if (res) {
-    console.log("Payment status:", res);
-  } else {
-    console.log("Payment status check failed");
-  }
+  return data.data.success;
 }
-
-handleDonate();
