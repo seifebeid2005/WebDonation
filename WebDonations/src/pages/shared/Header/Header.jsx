@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import "./Header.css";
+import DarkModeButton from "../darkmodebutton/darkmodebutton";
 // Import Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,10 +27,8 @@ const Header = ({ activePage, user = null }) => {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
-        // Scrolling down
         setShowHeader(false);
       } else if (currentScrollY < lastScrollY) {
-        // Scrolling up
         setShowHeader(true);
       }
 
@@ -41,22 +40,16 @@ const Header = ({ activePage, user = null }) => {
   }, [lastScrollY]);
 
   useEffect(() => {
-    // Close dropdown when clicking outside
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <>
@@ -66,6 +59,12 @@ const Header = ({ activePage, user = null }) => {
             <Link id="logo" to="/">
               Heart<span className="brand-highlight">Bridge</span>
             </Link>
+
+            {/* Dark Mode Toggle */}
+            <div style={{ marginLeft: "auto", marginRight: "20px" }}>
+              <DarkModeButton />
+            </div>
+
             <div id="navigation">
               <ul id="main-menu">
                 <li>
@@ -81,51 +80,40 @@ const Header = ({ activePage, user = null }) => {
                     to="/about-us"
                     className={activePage === "about" ? "active" : ""}
                   >
-                    <FontAwesomeIcon icon={faInfoCircle} className="nav-icon" />{" "}
-                    About
+                    <FontAwesomeIcon icon={faInfoCircle} className="nav-icon" /> About
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/causes"
-                    className={activePage === "causes" ? "active" : ""}
+                    className={activePage === "donate" || activePage === "causes" ? "active" : ""}
                   >
-                    <FontAwesomeIcon
-                      icon={faHandHoldingHeart}
-                      className="nav-icon"
-                    />{" "}
-                    Donate
+                    <FontAwesomeIcon icon={faHandHoldingHeart} className="nav-icon" /> Donate
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/contact"
-                    className={activePage === "conatct" ? "active" : ""}
+                    className={activePage === "contact" ? "active" : ""}
                   >
-                    <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />{" "}
-                    Contact
+                    <FontAwesomeIcon icon={faEnvelope} className="nav-icon" /> Contact
                   </Link>
                 </li>
                 {user ? (
                   <>
                     <li className="user-profile-container" ref={dropdownRef}>
                       <div
-                        className={`user-profile-icon ${
-                          dropdownOpen ? "active" : ""
-                        }`}
+                        className={`user-profile-icon ${dropdownOpen ? "active" : ""}`}
                         onClick={toggleDropdown}
                       >
                         {user.avatar ? (
                           <img src={user.avatar} alt="User avatar" />
                         ) : (
                           <div className="user-initial">
-                            {user.name
-                              ? user.name.charAt(0).toUpperCase()
-                              : "U"}
+                            {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                           </div>
                         )}
                       </div>
-
                       {dropdownOpen && (
                         <div className="dropdown-menu">
                           <div className="dropdown-header">
@@ -152,12 +140,9 @@ const Header = ({ activePage, user = null }) => {
                             <li>
                               <Link
                                 to="/RequestAddingCause"
-                                className={
-                                  activePage === "request" ? "active" : ""
-                                }
+                                className={activePage === "request" ? "active" : ""}
                               >
-                                <FontAwesomeIcon icon={faPlusCircle} /> Request
-                                Adding
+                                <FontAwesomeIcon icon={faPlusCircle} /> Request Adding
                               </Link>
                             </li>
                             <li>
