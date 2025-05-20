@@ -236,6 +236,7 @@ export default function Home({ user }) {
     window.location.href = "/causes";
     console.log("donate");
   };
+  
 
   return (
     <div className="home-container">
