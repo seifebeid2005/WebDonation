@@ -18,7 +18,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-const API_BASE_URL = 'http://localhost:8888/WebDonation/Backend/admin/causes.php';
+const API_BASE_URL = 'http://localhost/WebDonation/Backend/admin/causes.php';
 
 const AdminCauses = () => {
   const [causes, setCauses] = useState([]);

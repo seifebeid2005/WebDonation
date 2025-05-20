@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../../../functions/user/auth';
 import Header from '../../../shared/Header/Header';
 import Footer from '../../../shared/Footer/Footer';
@@ -8,6 +9,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setError('');
@@ -26,6 +28,10 @@ export default function LoginPage() {
     } catch (err) {
       setError(err.message || 'An error occurred.');
     }
+  };
+
+  const handleAdminLogin = () => {
+    navigate('/admin-signin');
   };
 
   return (
@@ -70,6 +76,26 @@ export default function LoginPage() {
 
             <button className="submit" type="button" onClick={handleSubmit}>
               Login
+            </button>
+
+            <button
+              type="button"
+              className="admin-login-btn"
+              onClick={handleAdminLogin}
+              style={{
+                marginTop: '1rem',
+                backgroundColor: '#3b82f6',
+                color: '#fff',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                width: '100%',
+                transition: 'background 0.2s'
+              }}
+            >
+              Admin Login
             </button>
           </form>
 

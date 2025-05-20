@@ -4,7 +4,7 @@ import "../AdminDashboard/AdminDashboard.css";
 import "./AdminRequests.css";
 
 const API_BASE_URL =
-  "http://localhost:8888/WebDonation/Backend/admin/cause_requests.php";
+  "http://localhost/WebDonation/Backend/admin/cause_requests.php";
 
 export default function AdminRequests() {
   const [requests, setRequests] = useState([]);

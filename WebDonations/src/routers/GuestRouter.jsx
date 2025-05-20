@@ -9,6 +9,10 @@ import AdminUsers from "../pages/admin/AdminUsers/AdminUsers";
 import FeaturedCauses from "../pages/user/CausesPage/CausesPage";
 import RequestAddingCause from "../pages/user/RequestCause/RequestCause";
 import ContactUs from "../pages/public/Contact/Contact";
+import AdminCauses from "../pages/admin/AdminCauses/AdminCauses";
+import AdminLogin from "../pages/admin/AdminLogin/AdminLogin";
+import AdminRequests from "../pages/admin/AdminRequests/AdminRequests";
+import AdminReport from "../pages/admin/AdminReport/AdminReport";
 // Example guest pages
 
 const GuestRouter = () => (
@@ -21,6 +25,10 @@ const GuestRouter = () => (
       <Route path="/admin-signin" element={<AdminSignIn />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/admin-users" element={<AdminUsers />} />
+      <Route path="/admin-causes" element={<AdminCauses />} />
+      <Route path="/admin-requests" element={<AdminRequests />} />
+      <Route path="/admin-report" element={<AdminReport />} />
+
       {/* Public pages */}
       <Route path="/" element={<HomePage />} />
       <Route path="/about-us" element={<AboutPage />} />
