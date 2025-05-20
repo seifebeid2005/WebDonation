@@ -4,50 +4,65 @@ header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST");
+header("Access-Control-Allow-Methods: POST");
 
 include("../config/database.php");
 
-// Only proceed if method is POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(["error" => "Only POST requests are allowed"]);
+// Get JSON POST data
+$data = json_decode(file_get_contents("php://input"), true);
+$username = trim($data['username'] ?? '');
+$password = $data['password'] ?? '';
+
+if (empty($username) || empty($password)) {
+    echo json_encode(["success" => false, "message" => "Username and password required."]);
     exit;
 }
 
-// Read the JSON input
-$input = json_decode(file_get_contents("php://input"), true);
-
-// Check if username and password are set
-if (!isset($input['username']) || !isset($input['password'])) {
-    echo json_encode(["error" => "Username and password are required"]);
-    exit;
-}
-
-$username = $input['username'];
-$password = $input['password'];
-
-// Prepare and execute query securely using prepared statements
-$stmt = $conn->prepare("SELECT id, username, password FROM admin WHERE username = ?");
-$stmt->bind_param("s", $username); //string
+// Fetch admin user (login with name OR email for flexibility)
+$stmt = $conn->prepare("SELECT id, name, email, password_hash, role, status FROM admins WHERE name = ? OR email = ? LIMIT 1");
+$stmt->bind_param("ss", $username, $username);
 $stmt->execute();
-$result = $stmt->get_result();
+$stmt->store_result();
 
-if ($result->num_rows === 1) {
-    $user = $result->fetch_assoc();
-
-    // Verify password (use password_hash when storing in DB)
-    if (password_verify($password, $user['password'])) {
-        $_SESSION['admin_id'] = $user['id'];
-        $_SESSION['admin_username'] = $user['username'];
-
-        echo json_encode(["success" => true, "message" => "Login successful", "username" => $user['username']]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Invalid credentials"]);
-    }
-} else {
-    echo json_encode(["success" => false, "message" => "User not found"]);
+if ($stmt->num_rows === 0) {
+    echo json_encode(["success" => false, "message" => "Invalid username/email or password."]);
+    $stmt->close();
+    exit;
 }
+
+$stmt->bind_result($id, $db_name, $db_email, $db_password, $role, $status);
+$stmt->fetch();
+
+// If password is plain text, compare directly
+if ($password !== $db_password) {
+    echo json_encode(["success" => false, "message" => "Invalid username/email or password."]);
+    $stmt->close();
+    exit;
+}
+
+// Optional: check if admin is active
+if ($status !== 'active') {
+    echo json_encode(["success" => false, "message" => "Account is not active."]);
+    $stmt->close();
+    exit;
+}
+
+// Set session
+$_SESSION['admin_id'] = $id;
+$_SESSION['admin_username'] = $db_name;
+$_SESSION['admin_role'] = $role;
 
 $stmt->close();
-$conn->close();
+
+echo json_encode([
+    "success" => true,
+    "message" => "Login successful.",
+    "admin" => [
+        "id" => $id,
+        "name" => $db_name,
+        "email" => $db_email,
+        "role" => $role,
+        "status" => $status
+    ]
+]);
 ?>

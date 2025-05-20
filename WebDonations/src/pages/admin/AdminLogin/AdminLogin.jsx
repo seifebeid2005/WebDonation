@@ -1,40 +1,86 @@
 import React, { useState } from "react";
-import "./AdminLogin.css"; // Reuse styles if you want
+import axios from "axios";
+import "./AdminLogin.css";
 import { useNavigate } from "react-router-dom";
 
-const AdminSignIn = () => {
-  const [admin, setAdmin] = useState({ username: "", password: "" });
+const AdminSignin = () => {
+  const [fields, setFields] = useState({ username: "", password: "" });
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleAdminLogin = (e) => {
+  const handleChange = (e) => {
+    setFields({ ...fields, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement admin login logic
-    // On successful login, redirect to admin dashboard
-    navigate("/admin-dashboard");
+    setAlert({ type: "", message: "" });
+    if (!fields.username || !fields.password) {
+      setAlert({ type: "error", message: "Username and password required." });
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://localhost/WebDonation/Backend/admin/login.php",
+        fields,
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        setAlert({ type: "success", message: "Login successful! Redirecting..." });
+        setTimeout(() => navigate("/admin-dashboard"), 1000);
+      } else {
+        setAlert({ type: "error", message: response.data.message });
+      }
+    } catch (err) {
+      setAlert({ type: "error", message: "Server error. Please try again." });
+    }
+    setLoading(false);
   };
 
   return (
-    <div className="auth-container">
-      <form className="auth-form admin-form" onSubmit={handleAdminLogin}>
-        <h2>Admin Sign In</h2>
-        <input
-          type="text"
-          placeholder="Admin Username"
-          value={admin.username}
-          onChange={(e) => setAdmin({ ...admin, username: e.target.value })}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={admin.password}
-          onChange={(e) => setAdmin({ ...admin, password: e.target.value })}
-          required
-        />
-        <button type="submit">Sign In</button>
+    <div className="admin-signin-bg">
+      <form className="admin-signin-form" onSubmit={handleSubmit}>
+        <h2>
+          <i className="fas fa-user-shield"></i> Admin Sign In
+        </h2>
+        {alert.message && (
+          <div className={`alert alert-${alert.type}`}>{alert.message}</div>
+        )}
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            autoFocus
+            type="text"
+            id="username"
+            name="username"
+            value={fields.username}
+            onChange={handleChange}
+            disabled={loading}
+            autoComplete="username"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={fields.password}
+            onChange={handleChange}
+            disabled={loading}
+            autoComplete="current-password"
+            required
+          />
+        </div>
+        <button className="btn btn-primary" type="submit" disabled={loading}>
+          {loading ? "Signing In..." : "Sign In"}
+        </button>
       </form>
     </div>
   );
 };
 
-export default AdminSignIn;
+export default AdminSignin;

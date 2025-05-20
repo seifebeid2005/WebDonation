@@ -13,6 +13,8 @@ import AdminCauses from "../pages/admin/AdminCauses/AdminCauses";
 import AdminLogin from "../pages/admin/AdminLogin/AdminLogin";
 import AdminRequests from "../pages/admin/AdminRequests/AdminRequests";
 import AdminReport from "../pages/admin/AdminReport/AdminReport";
+import DonationReport from "../pages/admin/DonationReport/DonationReport";
+import ChangePassword from "../pages/admin/ChangePassword/ChangePassword";
 // Example guest pages
 
 const GuestRouter = () => (
@@ -28,6 +30,8 @@ const GuestRouter = () => (
       <Route path="/admin-causes" element={<AdminCauses />} />
       <Route path="/admin-requests" element={<AdminRequests />} />
       <Route path="/admin-report" element={<AdminReport />} />
+      <Route path="/donations-report" element={<DonationReport />} />
+      <Route path="/change-password" element={<ChangePassword />} />
 
       {/* Public pages */}
       <Route path="/" element={<HomePage />} />
