@@ -232,6 +232,10 @@ export default function Home({ user }) {
   const scrollToSection = (ref) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
+  const HandleGotoDonate = () => {
+    window.location.href = "/causes";
+    console.log("donate");
+  };
 
   return (
     <div className="home-container">
@@ -270,9 +274,7 @@ export default function Home({ user }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <FancyDonateButton
-              onClick={() => (window.location.href = "/causes")}
-            />
+            <FancyDonateButton onClick={HandleGotoDonate} />
           </motion.div>
         </div>
         <div className="hero-overlay"></div>
