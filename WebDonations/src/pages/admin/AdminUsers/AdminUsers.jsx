@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import "../AdminDashboard/AdminDashboard.css"; // Reuse styles if you want
+import AdminLayout from "../AdminLayout";
 
 // Dummy admin and admin users data for demonstration
 const currentAdmin = {
@@ -163,185 +164,101 @@ export default function AdminUsers() {
     }
   };
 
-  const superAdminCount = admins.filter((a) => a.role === "superAdmin").length;
-
   return (
-    <div className="admin-container">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <div className="admin-profile">
-          <div className="profile-icon">
-            <i className="fas fa-user-shield"></i>
+    <AdminLayout admin={currentAdmin} activePage="users">
+      <div className="header">
+        <h1>
+          <i className="fas fa-tachometer-alt"></i> Admin Accounts Overview
+        </h1>
+        <div className="stats-summary">
+          <div className="stat-card">
+            <i className="fas fa-hand-holding-heart"></i>
+            <div className="card-center">
+              <h3>{admins.length}</h3>
+              <p>Active Accounts</p>
+            </div>
           </div>
-          <h3>{currentAdmin.username}</h3>
-          <p>{currentAdmin.role === "superAdmin" ? "Super Admin" : "Admin"}</p>
-        </div>
-        <nav className="admin-nav">
-          <ul>
-            <li>
-              <a href="/admin-dashboard">
-                <i className="fas fa-tachometer-alt"></i> Dashboard
-              </a>
-            </li>
-
-            {currentAdmin.role === "superAdmin" && (
-              <li className="active">
-                <a href="/admin-users">
-                  <i className="fas fa-users-cog"></i> Admin Users
-                </a>
-              </li>
-            )}
-            <li>
-              <a href="/donations-report">
-                <i className="fas fa-chart-bar"></i> Donations Report
-              </a>
-            </li>
-            <li>
-              <a href="/change-password">
-                <i className="fas fa-key"></i> Change Password
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <div className="logout-section">
-          <a href="/admin-logout" className="logout-btn">
-            <i className="fas fa-sign-out-alt"></i> Logout
-          </a>
+          <div className="stat-card">
+            <i className="fas fa-users"></i>
+            <div className="card-center">
+              <h3>{admins.filter(a => a.role === 'superAdmin').length}</h3>
+              <p>Super Admin</p>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Main Content */}
-      <div className="main-content">
-        <div className="header">
-          <h1>
-            <i className="fas fa-tachometer-alt"></i> Admin Accounts Overview
-          </h1>
-          <div className="stats-summary">
-            <div className="stat-card">
-              <i className="fas fa-hand-holding-heart"></i>
-              <div className="card-center">
-                <h3>{admins.length}</h3>
-                <p>Active Accounts</p>
-              </div>
-            </div>
-            <div className="stat-card">
-              <i className="fas fa-users"></i>
-              <div className="card-center">
-                <h3>{superAdminCount}</h3>
-                <p>Super Admin</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="header">
-          <h1>
+      <div className="content-section">
+        <div className="section-header">
+          <h2>
             <i className="fas fa-users-cog"></i> Admin Users Management
-          </h1>
+          </h2>
           {currentAdmin.role === "superAdmin" && (
-            <div className="header-actions">
-              <button className="btn btn-primary" onClick={openAddAdminModal}>
-                <i className="fas fa-plus"></i> Add New Admin
-              </button>
-            </div>
+            <button className="btn btn-primary" onClick={openAddAdminModal}>
+              <i className="fas fa-plus"></i> Add New Admin
+            </button>
           )}
         </div>
-        {/* Alerts */}
-        {alert.message && (
-          <div className={`alert alert-${alert.type}`}>
-            <i
-              className={
-                alert.type === "success"
-                  ? "fas fa-check-circle"
-                  : "fas fa-exclamation-circle"
-              }
-            />{" "}
-            {alert.message}
-            <span
-              className="close-btn"
-              onClick={() => setAlert({ type: "", message: "" })}
-            >
-              &times;
-            </span>
-          </div>
-        )}
-        <div className="content-section">
-          <div className="table-responsive">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th>Last Login</th>
-                  <th>Status</th>
-                  {currentAdmin.role === "superAdmin" && <th>Actions</th>}
+        <div className="table-responsive">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Last Login</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {admins.map((admin) => (
+                <tr key={admin.id}>
+                  <td>{admin.id}</td>
+                  <td>{admin.username}</td>
+                  <td>
+                    <span className={`badge ${admin.role === 'superAdmin' ? 'badge-superadmin' : 'badge-admin'}`}>
+                      {admin.role === 'superAdmin' ? 'SUPER ADMIN' : 'ADMIN'}
+                    </span>
+                  </td>
+                  <td>{formatDate(admin.lastLogin)}</td>
+                  <td>
+                    <span className={`badge ${admin.isActive ? 'badge-success' : 'badge-danger'}`}>
+                      {admin.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td>
+                    <button className="btn-action btn-edit" onClick={() => openEditAdminModal(admin)}>
+                      Edit
+                    </button>
+                    <button className="btn-action btn-delete" onClick={() => confirmDelete(admin.id, admin.username)}>
+                      Delete
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {admins.length ? (
-                  admins.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.username}</td>
-                      <td>
-                        <span
-                          className={
-                            "badge " +
-                            (user.role === "superAdmin"
-                              ? "badge-primary"
-                              : "badge-secondary")
-                          }
-                        >
-                          {user.role === "superAdmin" ? "Super Admin" : "Admin"}
-                        </span>
-                      </td>
-                      <td>{formatDate(user.lastLogin)}</td>
-                      <td>
-                        <span
-                          className={
-                            "status " + (user.isActive ? "active" : "inactive")
-                          }
-                        >
-                          <i className="fas fa-circle"></i>{" "}
-                          {user.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      {currentAdmin.role === "superAdmin" && (
-                        <td className="actions">
-                          <button
-                            className="btn-action btn-edit"
-                            onClick={() => openEditAdminModal(user)}
-                          >
-                            Edit
-                          </button>
-                          {user.username !== currentAdmin.username && (
-                            <button
-                              className="btn-action btn-delete"
-                              onClick={() =>
-                                confirmDelete(user.id, user.username)
-                              }
-                            >
-                              Delete
-                            </button>
-                          )}
-                        </td>
-                      )}
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="no-data">
-                      <i className="fas fa-info-circle"></i> No admin users
-                      found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-
+      {/* Alerts */}
+      {alert.message && (
+        <div className={`alert alert-${alert.type}`}>
+          <i
+            className={
+              alert.type === "success"
+                ? "fas fa-check-circle"
+                : "fas fa-exclamation-circle"
+            }
+          />{" "}
+          {alert.message}
+          <span
+            className="close-btn"
+            onClick={() => setAlert({ type: "", message: "" })}
+          >
+            &times;
+          </span>
+        </div>
+      )}
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="modal" onClick={handleOverlayClick}>
@@ -497,6 +414,6 @@ export default function AdminUsers() {
           </div>
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 }

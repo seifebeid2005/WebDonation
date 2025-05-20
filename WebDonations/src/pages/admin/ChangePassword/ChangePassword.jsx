@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./ChangePassword.css";
+import AdminLayout from "../AdminLayout";
 
 const ChangePassword = () => {
   const [fields, setFields] = useState({
@@ -54,109 +55,64 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="admin-container">
-      <div className="sidebar">
-        <div className="admin-profile">
-          <div className="profile-icon">
-            <i className="fas fa-user-shield"></i>
+    <AdminLayout admin={{username: 'adminuser', role: 'super_admin'}} activePage="password">
+      <div className="header">
+        <h1>
+          <i className="fas fa-key"></i> Change Password
+        </h1>
+      </div>
+      <div className="content-section">
+        {alert.message && (
+          <div className={`alert alert-${alert.type}`}>{alert.message}</div>
+        )}
+        <form className="change-password-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="current_password">Current Password</label>
+            <input
+              type="password"
+              id="current_password"
+              name="current_password"
+              value={fields.current_password}
+              onChange={handleChange}
+              autoComplete="current-password"
+              required
+              disabled={loading}
+            />
           </div>
-          <h3>adminuser</h3>
-          <p>Super Admin</p>
-        </div>
-        <nav className="admin-nav">
-          <ul>
-            <li>
-              <a href="/admin-dashboard">
-                <i className="fas fa-tachometer-alt"></i> Dashboard
-              </a>
-            </li>
-            <li>
-              <a href="/admin-requests">
-                <i className="fas fa-hand-holding-heart"></i> Donation Requests
-              </a>
-            </li>
-            <li>
-              <a href="/admin-users">
-                <i className="fas fa-users-cog"></i> Admin Users
-              </a>
-            </li>
-            <li>
-              <a href="/donations-report">
-                <i className="fas fa-chart-bar"></i> Donations Report
-              </a>
-            </li>
-            <li className="active">
-              <a href="/change-password">
-                <i className="fas fa-key"></i> Change Password
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <div className="logout-section">
-          <a href="/admin-logout" className="logout-btn">
-            <i className="fas fa-sign-out-alt"></i> Logout
-          </a>
-        </div>
+          <div className="form-group">
+            <label htmlFor="new_password">New Password</label>
+            <input
+              type="password"
+              id="new_password"
+              name="new_password"
+              value={fields.new_password}
+              onChange={handleChange}
+              autoComplete="new-password"
+              required
+              minLength={6}
+              disabled={loading}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="confirm_password">Confirm New Password</label>
+            <input
+              type="password"
+              id="confirm_password"
+              name="confirm_password"
+              value={fields.confirm_password}
+              onChange={handleChange}
+              autoComplete="new-password"
+              required
+              minLength={6}
+              disabled={loading}
+            />
+          </div>
+          <button className="btn btn-primary" type="submit" disabled={loading}>
+            {loading ? "Updating..." : "Change Password"}
+          </button>
+        </form>
       </div>
-      <div className="main-content">
-        <div className="header">
-          <h1>
-            <i className="fas fa-key"></i> Change Password
-          </h1>
-        </div>
-        <div className="content-section">
-          {alert.message && (
-            <div className={`alert alert-${alert.type}`}>{alert.message}</div>
-          )}
-          <form className="change-password-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="current_password">Current Password</label>
-              <input
-                type="password"
-                id="current_password"
-                name="current_password"
-                value={fields.current_password}
-                onChange={handleChange}
-                autoComplete="current-password"
-                required
-                disabled={loading}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="new_password">New Password</label>
-              <input
-                type="password"
-                id="new_password"
-                name="new_password"
-                value={fields.new_password}
-                onChange={handleChange}
-                autoComplete="new-password"
-                required
-                minLength={6}
-                disabled={loading}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirm_password">Confirm New Password</label>
-              <input
-                type="password"
-                id="confirm_password"
-                name="confirm_password"
-                value={fields.confirm_password}
-                onChange={handleChange}
-                autoComplete="new-password"
-                required
-                minLength={6}
-                disabled={loading}
-              />
-            </div>
-            <button className="btn btn-primary" type="submit" disabled={loading}>
-              {loading ? "Updating..." : "Change Password"}
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+    </AdminLayout>
   );
 };
 

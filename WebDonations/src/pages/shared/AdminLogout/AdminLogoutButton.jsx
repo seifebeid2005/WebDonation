@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import APIURL from "../../../functions/baseurl.js";
 
 const AdminLogoutButton = () => {
   const navigate = useNavigate();
@@ -8,8 +9,7 @@ const AdminLogoutButton = () => {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      // Call backend logout endpoint (adjust URL if needed)
-      await axios.get("http://localhost/WebDonation/Backend/admin/admin_logout.php", {
+      await axios.get(`${APIURL}admin/admin_logout.php`, {
         withCredentials: true,
       });
     } catch (err) {

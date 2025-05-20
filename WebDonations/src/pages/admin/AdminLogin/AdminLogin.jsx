@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./AdminLogin.css";
 import { useNavigate } from "react-router-dom";
+import APIURL from "../../../functions/baseurl.js";
 
 const AdminSignin = () => {
   const [fields, setFields] = useState({ username: "", password: "" });
@@ -23,7 +24,7 @@ const AdminSignin = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost/WebDonation/Backend/admin/login.php",
+        `${APIURL}admin/login.php`,
         fields,
         { withCredentials: true }
       );

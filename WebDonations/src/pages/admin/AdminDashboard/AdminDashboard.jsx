@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./AdminDashboard.css";
+import APIURL from "../../../functions/baseurl.js";
+import Sidebar from "./components/Sidebar";
+import AdminLayout from "../AdminLayout";
 
-const API_BASE_URL =
-  "http://localhost/WebDonation/Backend/admin/causes.php";
-
-// Dummy data for demonstration
 const admin = {
   username: "adminuser",
   role: "super_admin",
 };
+
+const DASHBOARD_STATS_URL = `${APIURL}admin/dashboard_stats.php`;
+const API_BASE_URL = `${APIURL}admin/causes.php`;
 
 // Helper for formatting date
 const formatDate = (date) => {
@@ -33,6 +35,7 @@ const formatCurrency = (amount, currency = "USD") => {
 function AdminDashboard() {
   // Dashboard state
   const [causes, setCauses] = useState([]);
+  const [stats, setStats] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add"); // "add" or "edit"
   const [editingCause, setEditingCause] = useState(null);
@@ -44,9 +47,10 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const formRef = useRef();
 
-  // Fetch causes on component mount
+  // Fetch causes and stats on component mount
   useEffect(() => {
     fetchCauses();
+    fetchStats();
   }, []);
 
   const fetchCauses = async () => {
@@ -61,7 +65,6 @@ function AdminDashboard() {
       if (responseData.success === false) {
         throw new Error(responseData.message || "Failed to fetch causes");
       }
-      // Store backend field names directly
       setCauses(responseData.data || []);
       setAlert({ type: "", message: "" });
     } catch (error) {
@@ -72,6 +75,15 @@ function AdminDashboard() {
       setCauses([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await axios.get(DASHBOARD_STATS_URL, { withCredentials: true });
+      setStats(response.data);
+    } catch (error) {
+      setStats({});
     }
   };
 
@@ -328,211 +340,167 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="admin-container">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <div className="admin-profile">
-          <div className="profile-icon">
-            <i className="fas fa-user-shield"></i>
-          </div>
-          <h3>{admin.username}</h3>
-          <p>{admin.role === "super_admin" ? "Super Admin" : "Admin"}</p>
-        </div>
-        <nav className="admin-nav">
-          <ul>
-            <li className="active">
-              <a href="/admin-dashboard">
-                <i className="fas fa-tachometer-alt"></i> Dashboard
-              </a>
-            </li>
-            <li>
-              <a href="/admin-requests">
-                <i className="fas fa-hand-holding-heart"></i> Donation Requests
-              </a>
-            </li>
-            <li>
-              <a href="/admin-users">
-                <i className="fas fa-users-cog"></i> Admin Users
-              </a>
-            </li>
-            <li>
-              <a href="/donations-report">
-                <i className="fas fa-chart-bar"></i> Donations Report
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <div className="logout-section">
-          <a href="/admin-logout" className="logout-btn">
-            <i className="fas fa-sign-out-alt"></i> Logout
-          </a>
-        </div>
-      </div>
-
+    <AdminLayout admin={admin} activePage="dashboard">
       {/* Main Content */}
-      <div className="main-content">
-        <div className="header">
-          <h1>
-            <i className="fas fa-tachometer-alt"></i> Dashboard Overview
-          </h1>
-          <div className="stats-summary">
-            <div className="stat-card">
-              <i className="fas fa-hand-holding-heart"></i>
-              <div>
-                <h3>{causes.length}</h3>
-                <p>Active Causes</p>
-              </div>
+      <div className="header">
+        <h1>
+          <i className="fas fa-tachometer-alt"></i> Dashboard Overview
+        </h1>
+        <div className="stats-summary">
+          <div className="stat-card">
+            <i className="fas fa-hand-holding-heart"></i>
+            <div>
+              <h3>{stats.activeCauses}</h3>
+              <p>Active Causes</p>
             </div>
-            <div className="stat-card">
-              <i className="fas fa-dollar-sign"></i>
-              <div>
-                <h3>{formatCurrency(totalRaised)}</h3>
-                <p>Total Raised</p>
-              </div>
+          </div>
+          <div className="stat-card">
+            <i className="fas fa-dollar-sign"></i>
+            <div>
+              <h3>{formatCurrency(stats.totalRaised)}</h3>
+              <p>Total Raised</p>
             </div>
-            <div className="stat-card">
-              <i className="fas fa-users"></i>
-              <div>
-                <h3>{donorCount}</h3>
-                <p>Donors</p>
-              </div>
+          </div>
+          <div className="stat-card">
+            <i className="fas fa-users"></i>
+            <div>
+              <h3>{stats.totalDonors}</h3>
+              <p>Donors</p>
             </div>
           </div>
         </div>
-
-        {/* Alerts */}
-        {alert.message && (
-          <div className={`alert alert-${alert.type}`}>
-            <i
-              className={
-                alert.type === "success"
-                  ? "fas fa-check-circle"
-                  : "fas fa-exclamation-circle"
-              }
-            />{" "}
-            {alert.message}
-            <span
-              className="close-btn"
-              onClick={() => setAlert({ type: "", message: "" })}
-            >
-              &times;
-            </span>
-          </div>
-        )}
-
-        <div className="content-section">
-          <div className="section-header">
-            <h2>
-              <i className="fas fa-hand-holding-heart"></i> Current Causes
-            </h2>
-            <button className="btn btn-primary" onClick={openAddCauseModal}>
-              <i className="fas fa-plus"></i> Add New Cause
-            </button>
-          </div>
-          <div className="table-responsive">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Goal Amount</th>
-                  <th>Raised</th>
-                  <th>Progress</th>
-                  <th>Status</th>
-                  <th>Featured</th>
-                  <th>Created</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {causes.length ? (
-                  causes.map((cause) => (
-                    <tr key={cause.id}>
-                      <td>{cause.id}</td>
-                      <td>
-                        <div className="cause-title">
-                          {cause.imageUrl ? (
-                            <img
-                              src={cause.imageUrl}
-                              alt={cause.title}
-                              className="cause-thumbnail"
-                            />
-                          ) : (
-                            <div className="cause-thumbnail placeholder">
-                              <i className="fas fa-image"></i>
-                            </div>
-                          )}
-                          <span>{cause.title}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="badge badge-category">
-                          {cause.category}
-                        </span>
-                      </td>
-                      <td>
-                        {formatCurrency(cause.goal_amount, cause.currency)}
-                      </td>
-                      <td>
-                        {formatCurrency(cause.raised_amount, cause.currency)}
-                      </td>
-                      <td>
-                        <div className="progress-container">
-                          <div
-                            className="progress-bar"
-                            style={{ width: `${getProgress(cause)}%` }}
-                          ></div>
-                          <span className="progress-text">
-                            {getProgress(cause).toFixed(1)}%
-                          </span>
-                        </div>
-                      </td>
-                      <td>
-                        <span
-                          className={
-                            "badge " +
-                            (cause.isActive ? "badge-success" : "badge-warning")
-                          }
-                        >
-                          {cause.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td>
-                        {cause.isFeatured ? (
-                          <i className="fas fa-star featured-icon"></i>
+        
+      </div>
+      {/* Alerts */}
+      {alert.message && (
+        <div className={`alert alert-${alert.type}`}>
+          <i
+            className={
+              alert.type === "success"
+                ? "fas fa-check-circle"
+                : "fas fa-exclamation-circle"
+            }
+          />{" "}
+          {alert.message}
+          <span
+            className="close-btn"
+            onClick={() => setAlert({ type: "", message: "" })}
+          >
+            &times;
+          </span>
+        </div>
+      )}
+      <div className="content-section">
+        <div className="section-header">
+          <h2>
+            <i className="fas fa-hand-holding-heart"></i> Current Causes
+          </h2>
+          <button className="btn btn-primary" onClick={openAddCauseModal}>
+            <i className="fas fa-plus"></i> Add Cause
+          </button>
+        </div>
+        <div className="table-responsive">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Goal Amount</th>
+                <th>Raised</th>
+                <th>Progress</th>
+                <th>Status</th>
+                <th>Featured</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {causes.length ? (
+                causes.map((cause) => (
+                  <tr key={cause.id}>
+                    <td>{cause.id}</td>
+                    <td>
+                      <div className="cause-title">
+                        {cause.imageUrl ? (
+                          <img
+                            src={cause.imageUrl}
+                            alt={cause.title}
+                            className="cause-thumbnail"
+                          />
                         ) : (
-                          <i className="far fa-star"></i>
+                          <div className="cause-thumbnail placeholder">
+                            <i className="fas fa-image"></i>
+                          </div>
                         )}
-                      </td>
-                      <td>{formatDate(cause.createdAt)}</td>
-                      <td className="actions">
-                        <button
-                          className="btn-action btn-edit"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent event bubbling
-                            openEditCauseModal(cause);
-                          }}
-                        >
-                          <i className="fas fa-edit"></i> Edit
-                        </button>
-                        {renderDeleteButton(cause.id)}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={10} className="no-data">
-                      <i className="fas fa-info-circle"></i> No causes found
+                        <span>{cause.title}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="badge badge-category">
+                        {cause.category}
+                      </span>
+                    </td>
+                    <td>
+                      {formatCurrency(cause.goal_amount, cause.currency)}
+                    </td>
+                    <td>
+                      {formatCurrency(cause.raised_amount, cause.currency)}
+                    </td>
+                    <td>
+                      <div className="progress-container">
+                        <div
+                          className="progress-bar"
+                          style={{ width: `${getProgress(cause)}%` }}
+                        ></div>
+                        <span className="progress-text">
+                          {getProgress(cause).toFixed(1)}%
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          "badge " +
+                          (cause.isActive ? "badge-success" : "badge-warning")
+                        }
+                      >
+                        {cause.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td>
+                      {cause.isFeatured ? (
+                        <i className="fas fa-star featured-icon"></i>
+                      ) : (
+                        <i className="far fa-star"></i>
+                      )}
+                    </td>
+                    <td>{formatDate(cause.createdAt)}</td>
+                    <td className="actions">
+                      <button
+                        className="btn-action btn-edit"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent event bubbling
+                          openEditCauseModal(cause);
+                        }}
+                      >
+                        <i className="fas fa-edit"></i> Edit
+                      </button>
+                      {renderDeleteButton(cause.id)}
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} className="no-data">
+                    <i className="fas fa-info-circle"></i> No causes found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
-
       {/* Add/Edit Cause Modal */}
       {showModal && (
         <div className="modal" onClick={handleOverlayClick}>
@@ -740,7 +708,6 @@ function AdminDashboard() {
           </div>
         </div>
       )}
-
       {/* Delete Confirm Modal */}
       {showDeleteModal && (
         <div className="modal" onClick={handleOverlayClick}>
@@ -786,7 +753,7 @@ function AdminDashboard() {
           </div>
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 }
 

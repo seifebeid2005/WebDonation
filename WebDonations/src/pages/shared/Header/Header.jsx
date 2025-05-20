@@ -4,6 +4,7 @@ import "./Header.css";
 import DarkModeButton from "../darkmodebutton/darkmodebutton";
 import { getUserData } from "../../../functions/user/auth";
 // Import Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -16,6 +17,9 @@ import {
   faCog,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
+
+// Add icons to library
+library.add(faHome, faInfoCircle, faHandHoldingHeart, faEnvelope, faUser, faHeart, faPlusCircle, faCog, faSignOutAlt);
 
 const Header = ({ activePage }) => {
   const [showHeader, setShowHeader] = useState(true);

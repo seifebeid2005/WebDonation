@@ -4,10 +4,11 @@
  * Fetches the admin statistics report from the backend.
  * @returns {Promise<Object>} The statistics data or error object.
  */
-import API_URL from '../baseurl.js';
+import APIURL from '../baseurl.js';
+
 export async function fetchAdminReport() {
     try {
-        const response = await fetch('http://localhost/webdonation/Backend/admin/report.php', {
+        const response = await fetch(`${APIURL}admin/report.php`, {
             method: 'GET',
             credentials: 'include', // Important for session cookie
             headers: {
