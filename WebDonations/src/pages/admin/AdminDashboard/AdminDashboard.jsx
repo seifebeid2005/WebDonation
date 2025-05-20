@@ -360,11 +360,6 @@ function AdminDashboard() {
                 <i className="fas fa-chart-bar"></i> Donations Report
               </a>
             </li>
-            <li>
-              <a href="/change-password">
-                <i className="fas fa-key"></i> Change Password
-              </a>
-            </li>
           </ul>
         </nav>
         <div className="logout-section">
