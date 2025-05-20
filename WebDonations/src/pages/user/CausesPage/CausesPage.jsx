@@ -73,7 +73,7 @@ function FeaturedCauses({ user }) {
 
   return (
     <>
-      <Header user={user} activePage={"causes"}/>
+      <Header user={user} activePage={"causes"} />
       <div className="causes-hero">
         <div className="causes-hero-overlay" />
         <div className="causes-hero-content">
@@ -185,7 +185,7 @@ function FeaturedCauses({ user }) {
                         </div>
                         {user ? (
                           <a
-                            href={`cause-details?causeId=${cause.id}`}
+                            href={`causesdetails?causeId=${cause.id}`}
                             className="btn btn-donate-modern"
                           >
                             <i className="fas fa-heart"></i> Donate

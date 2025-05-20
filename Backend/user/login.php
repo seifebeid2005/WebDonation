@@ -73,6 +73,9 @@ function login($conn, $email, $password) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_name'] = $user['name'];
+            $_SESSION['user_status'] = $user['status'];
+            $_SESSION['user_created_at'] = $user['created_at'];
+            $_SESSION['user_updated_at'] = $user['updated_at'];
 
             echo json_encode([
                 "success" => true,

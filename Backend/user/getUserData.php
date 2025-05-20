@@ -25,12 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 if (
     isset(
         $_SESSION['user_id'],
-        $_SESSION['user_name'],
-        $_SESSION['user_email'],
-        $_SESSION['user_password_hash'],
-        $_SESSION['user_status'],
-        $_SESSION['user_created_at'],
-        $_SESSION['user_updated_at']
     )
 ) {
     echo json_encode([
@@ -39,7 +33,6 @@ if (
             "id" => $_SESSION['user_id'],
             "name" => $_SESSION['user_name'],
             "email" => $_SESSION['user_email'],
-            "password_hash" => $_SESSION['user_password_hash'],
             "status" => $_SESSION['user_status'],
             "created_at" => $_SESSION['user_created_at'],
             "updated_at" => $_SESSION['user_updated_at']

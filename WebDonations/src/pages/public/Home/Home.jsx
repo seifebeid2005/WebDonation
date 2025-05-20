@@ -13,8 +13,6 @@ import RotatingWords from "../../shared/RotatingWords/RotatingWords";
 import RateUsStars from "../../shared/rateusstars/rateusestars";
 import ProceedToPaymentButton from "../../shared/paymentcoolicon/paymenticon";
 
-
-
 // Team data
 
 const TEAM_MEMBERS = [
@@ -231,10 +229,9 @@ export default function Home({ user }) {
     });
   };
 
-const scrollToSection = (ref) => {
-  ref.current?.scrollIntoView({ behavior: "smooth" });
-};
-
+  const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="home-container">
@@ -263,21 +260,20 @@ const scrollToSection = (ref) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            Join our mission to create lasting positive impact in communities around the world.
+            Join our mission to create lasting positive impact in communities
+            around the world.
           </motion.p>
+          <br />
           <motion.div
-  className="hero-cta"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.6 }}
->
-  <FancyDonateButton onClick={() => scrollToSection(donateRef)} />
-
-  <button className="btn-secondary" onClick={() => scrollToSection(aboutRef)}>
-    Learn More
-  </button>
-</motion.div>
-
+            className="hero-cta"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <FancyDonateButton
+              onClick={() => (window.location.href = "/causes")}
+            />
+          </motion.div>
         </div>
         <div className="hero-overlay"></div>
         <video autoPlay muted loop className="hero-video">
@@ -318,22 +314,23 @@ const scrollToSection = (ref) => {
               }}
             >
               <BackToTopButton />
-
             </div>
 
             <div className="about-text">
               <h3>Our Mission</h3>
               <p>
-                We believe in creating sustainable change through compassionate action. Our
-                organization is dedicated to addressing the root causes of poverty, inequality,
-                and educational gaps in underserved communities.
+                We believe in creating sustainable change through compassionate
+                action. Our organization is dedicated to addressing the root
+                causes of poverty, inequality, and educational gaps in
+                underserved communities.
               </p>
 
               <h3>Our Approach</h3>
               <p>
-                We take a holistic approach to community development by combining immediate
-                relief with long-term empowerment programs. By partnering with local leaders and
-                organizations, we ensure culturally appropriate and sustainable solutions.
+                We take a holistic approach to community development by
+                combining immediate relief with long-term empowerment programs.
+                By partnering with local leaders and organizations, we ensure
+                culturally appropriate and sustainable solutions.
               </p>
 
               <div className="values-container">
@@ -700,8 +697,7 @@ const scrollToSection = (ref) => {
                   ></textarea>
                 </div>
 
-<ProceedToPaymentButton />
-
+                <ProceedToPaymentButton />
 
                 <p className="donation-security-note">
                   <i className="fas fa-lock"></i> Your payment information is
@@ -764,11 +760,10 @@ const scrollToSection = (ref) => {
                 <div className="info-icon">
                   <i className="fas fa-comments"></i>
                 </div>
-<div className="rating-wrapper">
-  <h3>Rate Us</h3>
-  <RateUsStars />
-</div>
-
+                <div className="rating-wrapper">
+                  <h3>Rate Us</h3>
+                  <RateUsStars />
+                </div>
               </div>
             </div>
 
