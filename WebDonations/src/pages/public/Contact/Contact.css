@@ -558,3 +558,124 @@ body {
     padding: 16px 8px;
   }
 }
+/* ===== DARK MODE FOR CONTACT PAGE (cpro-theme) ===== */
+body.dark-theme {
+  --cpro-bg: #121212;
+  --cpro-light: #1e1e1e;
+  --cpro-dark: #ffffff;
+  --cpro-grey: #2c2c2c;
+  --cpro-text: #eeeeee;
+  --cpro-muted: #bbbbbb;
+}
+
+/* Background & containers */
+body.dark-theme,
+body.dark-theme .cpro-container {
+  background: var(--cpro-bg);
+  color: var(--cpro-text);
+}
+
+/* Header */
+body.dark-theme .cpro-header {
+  background: linear-gradient(90deg, #1f1f2f 60%, #2a2a3d 100%);
+  color: var(--cpro-light);
+}
+body.dark-theme .cpro-breadcrumb-link,
+body.dark-theme .cpro-breadcrumb-separator {
+  color: var(--cpro-muted);
+}
+body.dark-theme .cpro-breadcrumb-link:hover {
+  color: var(--cpro-accent);
+}
+body.dark-theme .cpro-breadcrumb-current {
+  color: var(--cpro-text);
+}
+
+/* Info Cards */
+body.dark-theme .cpro-info-card {
+  background: var(--cpro-light);
+  box-shadow: none;
+}
+body.dark-theme .cpro-info-title {
+  color: var(--cpro-dark);
+}
+body.dark-theme .cpro-info-content,
+body.dark-theme .cpro-info-additional {
+  color: var(--cpro-muted);
+}
+
+/* Form Container */
+body.dark-theme .cpro-form-container {
+  background: var(--cpro-light);
+}
+body.dark-theme .cpro-form-label {
+  color: var(--cpro-dark);
+}
+body.dark-theme .cpro-form-description {
+  color: var(--cpro-text);
+}
+body.dark-theme .cpro-form-input,
+body.dark-theme .cpro-form-textarea {
+  background: #1a1a1a;
+  border-color: #333;
+  color: var(--cpro-text);
+}
+body.dark-theme .cpro-form-input:focus,
+body.dark-theme .cpro-form-textarea:focus {
+  background: #1a1a1a;
+  border-color: var(--cpro-primary);
+}
+
+/* FAQ */
+body.dark-theme .cpro-faq-item {
+  background: var(--cpro-light);
+  border-color: #333;
+}
+body.dark-theme .cpro-faq-question {
+  background: #181818;
+}
+body.dark-theme .cpro-faq-item[open] .cpro-faq-question {
+  background: #222;
+}
+body.dark-theme .cpro-faq-answer {
+  color: var(--cpro-muted);
+}
+
+/* Newsletter */
+body.dark-theme .cpro-newsletter-section {
+  background: linear-gradient(90deg, #1a1a1a 60%, #232323 100%);
+}
+body.dark-theme .cpro-newsletter-container {
+  background: var(--cpro-light);
+}
+body.dark-theme .cpro-newsletter-description {
+  color: var(--cpro-text);
+}
+body.dark-theme .cpro-newsletter-input {
+  background: #1a1a1a;
+  color: var(--cpro-text);
+  border-color: #444;
+}
+body.dark-theme .cpro-newsletter-input:focus {
+  background: #1a1a1a;
+  border-color: var(--cpro-primary);
+}
+
+/* Status Alerts */
+body.dark-theme .cpro-form-status.cpro-success {
+  background: #193b2f;
+  border-color: var(--cpro-success);
+  color: var(--cpro-success);
+}
+body.dark-theme .cpro-form-status.cpro-error {
+  background: #4e1c1c;
+  border-color: var(--cpro-error);
+  color: var(--cpro-error);
+}
+body.dark-theme .cpro-section-wrapper {
+  background-color: #121212;
+}
+body.dark-theme .cpro-contact-section {
+  background-color: #121212;
+}
+

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./Header.css";
+import DarkModeButton from "../darkmodebutton/darkmodebutton";
 
 const Header = ({ activePage, user = null }) => {
   const [showHeader, setShowHeader] = useState(true);
@@ -11,10 +12,8 @@ const Header = ({ activePage, user = null }) => {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
-        // Scrolling down
         setShowHeader(false);
       } else if (currentScrollY < lastScrollY) {
-        // Scrolling up
         setShowHeader(true);
       }
 
@@ -32,6 +31,12 @@ const Header = ({ activePage, user = null }) => {
           <Link id="logo" to="/">
             Heart<span className="brand-highlight">Bridge</span>
           </Link>
+
+          {/* Add the dark mode toggle here */}
+          <div style={{ marginLeft: "auto", marginRight: "20px" }}>
+            <DarkModeButton />
+          </div>
+
           <div id="navigation">
             <ul id="main-menu">
               <li>

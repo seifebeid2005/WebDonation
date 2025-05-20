@@ -140,3 +140,54 @@ button {
   padding: 2rem;
   color: #666;
 }
+/* ===== DARK MODE SUPPORT ===== */
+body.dark-theme .profile-container {
+  background: #1e1e1e;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  color: #f5f5f5;
+}
+
+body.dark-theme .profile-container h2 {
+  color: #ffffff;
+}
+
+body.dark-theme .profile-view .profile-field {
+  border-bottom: 1px solid #333;
+}
+
+body.dark-theme .profile-view .profile-field label {
+  color: #bbbbbb;
+}
+
+body.dark-theme .profile-form label {
+  color: #cccccc;
+}
+
+body.dark-theme .profile-form input {
+  background: #2b2b2b;
+  color: #f1f1f1;
+  border: 1px solid #444;
+}
+
+body.dark-theme .cancel-button {
+  background-color: #2b2b2b;
+  color: #ddd;
+}
+
+body.dark-theme .cancel-button:hover {
+  background-color: #3a3a3a;
+}
+
+body.dark-theme .error-message {
+  background-color: #3d1e1e;
+  color: #ff9999;
+}
+
+body.dark-theme .success-message {
+  background-color: #1f3d1f;
+  color: #a8e6a1;
+}
+
+body.dark-theme .loading {
+  color: #aaa;
+}

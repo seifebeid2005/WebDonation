@@ -918,3 +918,217 @@ blockquote cite {
 .pulse {
   animation: pulse 2s infinite;
 }
+/* ===== DARK MODE THEME OVERRIDES ===== */
+
+body.dark-theme {
+  background-color: #121212;
+  color: #eeeeee;
+}
+
+/* === Hero Section === */
+body.dark-theme .about-page .hero-section {
+  background-blend-mode: multiply;
+  color: #ffffff;
+}
+
+body.dark-theme .about-page .hero-content h1 {
+  color: #ffffff;
+}
+
+body.dark-theme .about-page .hero-content p {
+  color: #dddddd;
+}
+
+body.dark-theme .about-page .hero-overlay {
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.9));
+}
+
+/* === Mission Section === */
+body.dark-theme .mission-section {
+  background-color: #1a1a1a;
+}
+
+body.dark-theme .mission-card {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+}
+
+body.dark-theme .mission-card p {
+  color: #cccccc;
+}
+
+body.dark-theme .mission-icon {
+  background: #7fbbff;
+  color: #121212;
+}
+
+/* === Story Section === */
+body.dark-theme .story-section {
+  background-color: #1a1a1a;
+}
+
+body.dark-theme .timeline-content {
+  background-color: #2a2a2a;
+  color: #eeeeee;
+  box-shadow: none;
+}
+
+body.dark-theme .timeline-year {
+  background: #7fbbff;
+  color: #121212;
+}
+
+body.dark-theme .timeline-content h3 {
+  color: #7fbbff;
+}
+
+body.dark-theme .timeline-content::after {
+  border-left-color: #2a2a2a;
+}
+
+body.dark-theme .timeline-item:nth-child(even) .timeline-content::after {
+  border-right-color: #2a2a2a;
+}
+
+/* === Values Section === */
+body.dark-theme .values-section {
+  background-color: #121212;
+}
+
+body.dark-theme .value-card {
+  background-color: #2a2a2a;
+  color: #eeeeee;
+}
+
+body.dark-theme .value-card p {
+  color: #cccccc;
+}
+
+/* === Team Section === */
+body.dark-theme .team-section {
+  background-color: #121212;
+}
+
+body.dark-theme .team-card {
+  background-color: #1e1e1e;
+}
+
+body.dark-theme .member-info p {
+  color: #bbbbbb;
+}
+
+body.dark-theme .member-title {
+  color: #7fbbff;
+}
+
+/* === Impact Section === */
+body.dark-theme .impact-section {
+  background-color: #1a1a1a;
+}
+
+body.dark-theme .impact-stat {
+  background-color: #2a2a2a;
+}
+
+body.dark-theme .stat-content .stat-label,
+body.dark-theme .stat-content p {
+  color: #cccccc;
+}
+
+body.dark-theme .impact-map h3 {
+  color: #7fbbff;
+}
+
+/* === Partners Section === */
+body.dark-theme .partners-section {
+  background-color: #1a1a1a;
+}
+
+body.dark-theme .partner-card {
+  background-color: #2a2a2a;
+  color: #eeeeee;
+}
+
+body.dark-theme blockquote {
+  background-color: #1e1e1e;
+  color: #eeeeee;
+  box-shadow: none;
+}
+
+body.dark-theme blockquote i {
+  color: #7fbbff;
+}
+
+body.dark-theme blockquote cite {
+  color: #7fbbff;
+}
+
+/* === CTA Section === */
+body.dark-theme .cta-section {
+  background-blend-mode: darken;
+  color: #ffffff;
+}
+
+body.dark-theme .cta-content p {
+  color: #dddddd;
+}
+
+/* === Buttons === */
+body.dark-theme .btn-primary {
+  background: #7fbbff;
+  color: #121212;
+}
+
+body.dark-theme .btn-primary:hover {
+  background: #9fd0ff;
+}
+
+body.dark-theme .btn-secondary {
+  border: 2px solid #eeeeee;
+  color: #eeeeee;
+  background: transparent;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background: #eeeeee;
+  color: #121212;
+}
+
+body.dark-theme .btn-tertiary {
+  border-color: #7fbbff;
+  color: #7fbbff;
+}
+
+body.dark-theme .btn-tertiary:hover {
+  background-color: #7fbbff;
+  color: #121212;
+}
+
+/* === General Text === */
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4 {
+  color: #ffffff;
+}
+
+body.dark-theme p {
+  color: #dddddd;
+}
+
+body.dark-theme span {
+  color: #7fbbff;
+}
+
+body.dark-theme li {
+  color: #dddddd;
+}
+
+/* === Always Blue Text (Light & Dark Mode) === */
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+body.dark-theme .text-primary {
+  color: var(--primary-color) !important;
+}

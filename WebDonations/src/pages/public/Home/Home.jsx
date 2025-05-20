@@ -10,6 +10,8 @@ import styled from "styled-components";
 import BackToTopButton from "../../shared/backtotop/BackToTopButton";
 import FancyDonateButton from "../../shared/FancyDonateButton/FancyDonateButton";
 import RotatingWords from "../../shared/RotatingWords/RotatingWords";
+import RateUsStars from "../../shared/rateusstars/rateusestars";
+import ProceedToPaymentButton from "../../shared/paymentcoolicon/paymenticon";
 
 
 
@@ -698,10 +700,8 @@ const scrollToSection = (ref) => {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="donate-submit-btn">
-                  <i className="fas fa-credit-card"></i>
-                  Proceed to Payment
-                </button>
+<ProceedToPaymentButton />
+
 
                 <p className="donation-security-note">
                   <i className="fas fa-lock"></i> Your payment information is
@@ -764,21 +764,11 @@ const scrollToSection = (ref) => {
                 <div className="info-icon">
                   <i className="fas fa-comments"></i>
                 </div>
-                <h3>Follow Us</h3>
-                <div className="social-links">
-                  <a href="#" aria-label="Facebook">
-                    <i className="fab fa-facebook-f"></i>
-                  </a>
-                  <a href="#" aria-label="Twitter">
-                    <i className="fab fa-twitter"></i>
-                  </a>
-                  <a href="#" aria-label="Instagram">
-                    <i className="fab fa-instagram"></i>
-                  </a>
-                  <a href="#" aria-label="LinkedIn">
-                    <i className="fab fa-linkedin-in"></i>
-                  </a>
-                </div>
+<div className="rating-wrapper">
+  <h3>Rate Us</h3>
+  <RateUsStars />
+</div>
+
               </div>
             </div>
 

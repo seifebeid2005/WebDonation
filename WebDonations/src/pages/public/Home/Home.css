@@ -1,7 +1,7 @@
 /* ===== Base Styles ===== */
 :root {
   --primary-color: #4361ee;
-  --primary-light: #7fbbff;
+  --primary-light: #4361ee;
   --primary-dark: #2a4494;
   --secondary-color: #ff4757;
   --accent-color: #38b000;
@@ -1010,3 +1010,187 @@
     text-align: left;
   }
 }
+
+body.dark-theme .home-container {
+  background-color: #181818;
+  color: #f5f5f5;
+}
+/* ========================= */
+/*       DARK THEME         */
+/* ========================= */
+
+/* Page background and text */
+body.dark-theme .home-container {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* Section backgrounds */
+body.dark-theme .about-section,
+body.dark-theme .impact-section,
+body.dark-theme .team-section,
+body.dark-theme .testimonials-section,
+body.dark-theme .donate-section,
+body.dark-theme .contact-section {
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+}
+
+/* Cards and content blocks */
+body.dark-theme .value-item,
+body.dark-theme .stat-box,
+body.dark-theme .project-card,
+body.dark-theme .team-member,
+body.dark-theme .testimonial-content,
+body.dark-theme .info-card,
+body.dark-theme .donate-form-container,
+body.dark-theme .contact-form-wrapper {
+  background-color: #222;
+  color: #f0f0f0;
+  box-shadow: none;
+}
+
+/* Section titles */
+body.dark-theme .section-header h2,
+body.dark-theme h3,
+body.dark-theme h4 {
+  color: #ffffff;
+}
+
+/* Subtitles and light text */
+body.dark-theme .section-subtitle,
+body.dark-theme p,
+body.dark-theme .stat-box p,
+body.dark-theme .value-item p,
+body.dark-theme .project-stats li,
+body.dark-theme .testimonial-author p {
+  color: #cccccc;
+}
+
+/* Input and Textareas */
+body.dark-theme input,
+body.dark-theme textarea {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-color: #444;
+}
+
+body.dark-theme input:focus,
+body.dark-theme textarea:focus {
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(127, 187, 255, 0.2);
+}
+
+/* Primary Button */
+body.dark-theme .btn-primary,
+body.dark-theme .donate-submit-btn,
+body.dark-theme .contact-submit-btn {
+  background-color: #7fbbff;
+  color: #121212;
+}
+
+body.dark-theme .btn-primary:hover,
+body.dark-theme .donate-submit-btn:hover,
+body.dark-theme .contact-submit-btn:hover {
+  background-color: #9fd0ff;
+}
+
+/* Secondary Button */
+body.dark-theme .btn-secondary {
+  background: transparent;
+  border: 2px solid #f0f0f0;
+  color: #f0f0f0;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background: #f0f0f0;
+  color: #121212;
+}
+
+/* Amount buttons */
+body.dark-theme .amount-button {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-color: #444;
+}
+
+body.dark-theme .amount-button.active {
+  background-color: #7fbbff;
+  color: #121212;
+  border-color: #7fbbff;
+}
+
+body.dark-theme .amount-button:hover {
+  border-color: #7fbbff;
+}
+
+/* Dot indicators in testimonials */
+body.dark-theme .testimonial-dot {
+  background-color: #444;
+}
+
+body.dark-theme .testimonial-dot.active {
+  background-color: #4361ee ;
+}
+
+/* Social links hover */
+body.dark-theme .social-links a:hover {
+  background-color: #4361ee;
+  color: #121212;
+}
+/* ========== Dark Mode Hero Section ========== */
+
+body.dark-theme .hero-section {
+  position: relative;
+}
+
+body.dark-theme .hero-overlay {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+}
+
+body.dark-theme .hero-content h1 {
+  color: #ffffff;
+}
+
+body.dark-theme .hero-content p {
+  color: #dddddd;
+}
+
+body.dark-theme .hero-cta .btn-primary {
+  background-color: #4361ee;
+  color: #121212;
+}
+
+body.dark-theme .hero-cta .btn-secondary {
+  border: 2px solid #f0f0f0;
+  color: #f0f0f0;
+}
+
+body.dark-theme .hero-cta .btn-secondary:hover {
+  background-color: #ffffff;
+  color: #121212;
+}
+
+/* Rotating words fix */
+body.dark-theme .word {
+  color: #4361ee  !important;
+}
+/* Make "Together We Can" text black in dark mode */
+body.dark-theme .hero-content h1 {
+  color: #000000;
+}
+/* Make hero paragraph readable in dark mode */
+body.dark-theme .hero-content p {
+  color: #d0d0d0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.rating-wrapper {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.rating-wrapper h3 {
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+

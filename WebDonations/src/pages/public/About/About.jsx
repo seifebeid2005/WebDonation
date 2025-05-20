@@ -44,6 +44,7 @@ const TIMELINE_EVENTS = [
   },
 ];
 
+
 // Team data
 const TEAM_MEMBERS = [
   {

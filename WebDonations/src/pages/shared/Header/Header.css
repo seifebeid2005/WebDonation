@@ -84,4 +84,71 @@
 #header.hidden {
   transform: translateY(-100%);
 }
+/* Global dark mode styles */
+body.dark-theme {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+body.dark-theme #header {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+body.dark-theme a {
+  color: #ffffff;
+}
+
+body.dark-theme a:hover {
+  color: #7fbbff;
+}
+
+body.dark-theme .btn-primary {
+  background-color: #7fbbff;
+  color: #121212;
+}
+
+body.dark-theme .btn-secondary {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background-color: #ffffff;
+  color: #121212;
+}
+/* ========== DARK MODE SUPPORT ========== */
+
+/* Whole page background and text */
+body.dark-theme {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* Header background and text */
+body.dark-theme #header {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border-bottom: 1px solid #333;
+}
+
+/* Navigation links color */
+body.dark-theme #main-menu a {
+  color: #dddddd;
+}
+
+/* Navigation link hover and active states */
+body.dark-theme #main-menu a:hover,
+body.dark-theme #main-menu a.current {
+  color: #7fbbff;
+}
+
+body.dark-theme #main-menu a::after {
+  background-color: #7fbbff;
+}
+
+/* Logo text */
+body.dark-theme #logo {
+  color: #ffffff;
+}
 
