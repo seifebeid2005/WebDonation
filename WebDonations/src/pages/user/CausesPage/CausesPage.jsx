@@ -73,7 +73,7 @@ function FeaturedCauses({ user }) {
 
   return (
     <>
-      <Header user={user} />
+      <Header user={user} activePage={"causes"}/>
       <div className="causes-hero">
         <div className="causes-hero-overlay" />
         <div className="causes-hero-content">
