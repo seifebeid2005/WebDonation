@@ -4,6 +4,7 @@ const API_URL_LOGIN = `${APIURL}user/login.php`;
 const API_URL_REGISTER = `${APIURL}user/register.php`;
 const API_URL_LOGOUT = `${APIURL}user/logout.php`;
 const API_GET_USER_ID = `${APIURL}auth/check_session.php`;
+const API_GET_USER_DATA = `${APIURL}user/getUserData.php`;
 
 // Helper for POST requests with credentials
 async function apiRequest(url, body) {
@@ -55,7 +56,12 @@ export async function register({ name, email, password }) {
 export async function logout() {
   return apiRequest(API_URL_LOGOUT, {});
 }
- // Check if user is logged in
+
+// Check if user is logged in
 export async function getUserId() {
   return apiRequest(API_GET_USER_ID, {});
+}
+
+export async function getUserData() {
+  return apiRequest(API_GET_USER_DATA);
 }

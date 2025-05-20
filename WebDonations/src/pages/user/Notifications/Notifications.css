@@ -1,0 +1,55 @@
+.container {
+  max-width: 500px;
+  margin: auto;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.notification {
+  background: white;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease;
+}
+
+.notification:hover {
+  transform: scale(1.02);
+}
+
+.message {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.date {
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
+}
+
+/* Different types */
+.success {
+  border-left: 6px solid #4caf50;
+}
+
+.info {
+  border-left: 6px solid #2196f3;
+}
+
+.error {
+  border-left: 6px solid #f44336;
+}
+
+.empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 15px;
+  margin-top: 40px;
+}

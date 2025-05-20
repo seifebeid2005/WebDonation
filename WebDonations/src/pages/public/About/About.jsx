@@ -44,7 +44,6 @@ const TIMELINE_EVENTS = [
   },
 ];
 
-
 // Team data
 const TEAM_MEMBERS = [
   {
@@ -145,7 +144,7 @@ const AnimatedSection = ({ children, className }) => {
   );
 };
 
-export default function AboutPage({ user }) {
+export default function AboutPage() {
   // Implement smooth scrolling
   useEffect(() => {
     // Smooth scroll function
@@ -179,7 +178,7 @@ export default function AboutPage({ user }) {
 
   return (
     <div className="about-page">
-      <Header activePage={"about"} user={user} />
+      <Header activePage={"about"} />
 
       {/* Hero Section */}
       <section className="hero-section">

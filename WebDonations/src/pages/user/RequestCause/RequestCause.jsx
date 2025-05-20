@@ -108,7 +108,7 @@ export default function RequestAddingCause({ user }) {
 
   return (
     <>
-      <Header user={user} />
+      <Header />
       <div className="request-cause-container">
         <div className="request-cause-card">
           <h2 className="request-cause-title">

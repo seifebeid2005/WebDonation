@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import "./Header.css";
 import DarkModeButton from "../darkmodebutton/darkmodebutton";
+import { getUserData } from "../../../functions/user/auth";
 // Import Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,12 +17,19 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Header = ({ activePage, user = null }) => {
+const Header = ({ activePage }) => {
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(window.scrollY);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  const [userData, setUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    status: "",
+    created_at: "",
+    updated_at: "",
+  });
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -38,6 +46,16 @@ const Header = ({ activePage, user = null }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await getUserData();
+      if (userData.success) {
+        setUser(userData.user);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -80,15 +98,24 @@ const Header = ({ activePage, user = null }) => {
                     to="/about-us"
                     className={activePage === "about" ? "active" : ""}
                   >
-                    <FontAwesomeIcon icon={faInfoCircle} className="nav-icon" /> About
+                    <FontAwesomeIcon icon={faInfoCircle} className="nav-icon" />{" "}
+                    About
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/causes"
-                    className={activePage === "donate" || activePage === "causes" ? "active" : ""}
+                    className={
+                      activePage === "donate" || activePage === "causes"
+                        ? "active"
+                        : ""
+                    }
                   >
-                    <FontAwesomeIcon icon={faHandHoldingHeart} className="nav-icon" /> Donate
+                    <FontAwesomeIcon
+                      icon={faHandHoldingHeart}
+                      className="nav-icon"
+                    />{" "}
+                    Donate
                   </Link>
                 </li>
                 <li>
@@ -96,21 +123,26 @@ const Header = ({ activePage, user = null }) => {
                     to="/contact"
                     className={activePage === "contact" ? "active" : ""}
                   >
-                    <FontAwesomeIcon icon={faEnvelope} className="nav-icon" /> Contact
+                    <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />{" "}
+                    Contact
                   </Link>
                 </li>
-                {user ? (
+                {userData ? (
                   <>
                     <li className="user-profile-container" ref={dropdownRef}>
                       <div
-                        className={`user-profile-icon ${dropdownOpen ? "active" : ""}`}
+                        className={`user-profile-icon ${
+                          dropdownOpen ? "active" : ""
+                        }`}
                         onClick={toggleDropdown}
                       >
-                        {user.avatar ? (
-                          <img src={user.avatar} alt="User avatar" />
+                        {userData.avatar ? (
+                          <img src={userData.avatar} alt="User avatar" />
                         ) : (
                           <div className="user-initial">
-                            {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                            {userData.name
+                              ? userData.name.charAt(0).toUpperCase()
+                              : ""}
                           </div>
                         )}
                       </div>
@@ -119,10 +151,10 @@ const Header = ({ activePage, user = null }) => {
                           <div className="dropdown-header">
                             <div className="dropdown-user-info">
                               <p className="dropdown-user-name">
-                                {user.name || "User"}
+                                {userData.name || "User"}
                               </p>
                               <p className="dropdown-user-email">
-                                {user.email || ""}
+                                {userData.email || ""}
                               </p>
                             </div>
                           </div>
@@ -140,9 +172,12 @@ const Header = ({ activePage, user = null }) => {
                             <li>
                               <Link
                                 to="/RequestAddingCause"
-                                className={activePage === "request" ? "active" : ""}
+                                className={
+                                  activePage === "request" ? "active" : ""
+                                }
                               >
-                                <FontAwesomeIcon icon={faPlusCircle} /> Request Adding
+                                <FontAwesomeIcon icon={faPlusCircle} /> Request
+                                Adding
                               </Link>
                             </li>
                             <li>

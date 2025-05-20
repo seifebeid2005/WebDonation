@@ -125,7 +125,7 @@ function AnimatedCounter({ value, title, icon }) {
   );
 }
 
-export default function Home({ user }) {
+export default function Home() {
   const [activePlan, setActivePlan] = useState("monthly");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [donationAmount, setDonationAmount] = useState("100");
@@ -236,12 +236,10 @@ export default function Home({ user }) {
     window.location.href = "/causes";
     console.log("donate");
   };
-  
 
   return (
     <div className="home-container">
-      <Header activePage={"home"} user={user} />
-
+      <Header activePage={"home"} />
       {/* Hero Section */}
       <section className="hero-section" ref={heroRef}>
         <div className="hero-content">

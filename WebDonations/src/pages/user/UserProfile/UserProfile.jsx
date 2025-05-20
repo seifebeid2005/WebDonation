@@ -8,7 +8,6 @@ import Loader from "../../shared/Loader/Loader";
 import styled from "styled-components";
 import LogoutButton from "../../shared/LogoutButton/LogoutButton";
 
-
 const UserProfile = () => {
   const [profile, setProfile] = useState({
     name: "",
@@ -52,7 +51,7 @@ const UserProfile = () => {
 
   return (
     <>
-      <Header user={profile} />
+      <Header />
       <div className="profile-container">
         <h2>User Profile</h2>
         <div className="profile-view">
