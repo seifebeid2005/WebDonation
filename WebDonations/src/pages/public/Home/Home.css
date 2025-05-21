@@ -695,7 +695,6 @@
 
 .amount-button {
   padding: 10px 15px;
-  background: var(--white);
   border: 1px solid var(--light-gray);
   border-radius: var(--border-radius);
   cursor: pointer;
@@ -1110,7 +1109,6 @@ body.dark-theme .btn-secondary:hover {
 /* Amount buttons */
 body.dark-theme .amount-button {
   background-color: #2a2a2a;
-  color: #ffffff;
   border-color: #444;
 }
 
@@ -1130,7 +1128,7 @@ body.dark-theme .testimonial-dot {
 }
 
 body.dark-theme .testimonial-dot.active {
-  background-color: #4361ee ;
+  background-color: #4361ee;
 }
 
 /* Social links hover */
@@ -1173,7 +1171,7 @@ body.dark-theme .hero-cta .btn-secondary:hover {
 
 /* Rotating words fix */
 body.dark-theme .word {
-  color: #4361ee  !important;
+  color: #4361ee !important;
 }
 /* Make "Together We Can" text black in dark mode */
 body.dark-theme .hero-content h1 {
@@ -1193,4 +1191,3 @@ body.dark-theme .hero-content p {
   margin-bottom: 0.5rem;
   color: var(--primary-color);
 }
-
