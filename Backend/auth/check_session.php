@@ -13,14 +13,14 @@ if (isset($_SESSION['user_id'])) {
         'status' => 'success',
         'user_id' => $_SESSION['user_id'],
     ];
-    if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
-        $response['role'] = 'admin';
-    }
-    echo json_encode($response);
 } else {
-    echo json_encode([
+    $response = [
         'status' => 'error',
         'message' => null,
-    ]);
+    ];
+    if (isset($_SESSION['admin_id'])) {
+        $response['role'] = 'admin';
+    }
 }
+echo json_encode($response);
 ?>

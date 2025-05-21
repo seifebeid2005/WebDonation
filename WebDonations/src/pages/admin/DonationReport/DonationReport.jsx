@@ -15,7 +15,7 @@ const statusColors = {
   completed: "#27ae60",
   pending: "#f39c12",
   failed: "#e74c3c",
-  refunded: "#2980b9"
+  refunded: "#2980b9",
 };
 
 const DonationReport = () => {

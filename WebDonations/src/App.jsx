@@ -1,4 +1,3 @@
-import { BrowserRouter } from "react-router-dom";
 import { useState, useEffect } from "react";
 import GuestRouter from "./routers/GuestRouter";
 import UserRouter from "./routers/UserRouter";
@@ -17,13 +16,25 @@ const App = () => {
       try {
         const response = await getUserId();
         console.log("User session response:", response);
-        if (response.status === "success") {
-          setUserId(response.user_id);
-          setRole(response.role);
-          setRole("user");
-        } else {
-          setRole("guest");
+
+        // Admin is logged in (even with error status)
+        if (response.role === "admin") {
+          setRole("admin");
+          console.log("Admin authenticated");
+          return;
         }
+
+        // Regular user is logged in
+        if (response.status === "success" && response.user_id) {
+          setUserId(response.user_id);
+          setRole("user");
+          console.log("User authenticated with ID:", response.user_id);
+          return;
+        }
+
+        // No valid session
+        setRole("guest");
+        console.log("No active session, setting as guest");
       } catch (error) {
         console.error("Error checking user session:", error);
         setRole("guest");
@@ -39,18 +50,19 @@ const App = () => {
     return <Loader />;
   }
 
-  if (role === "guest") {
-    return <GuestRouter />;
+  // Render appropriate router based on role
+  switch (role) {
+    case "guest":
+      return <GuestRouter />;
+    case "user":
+      console.log("User router loaded with ID:", userId);
+      return <UserRouter user={userId} />;
+    case "admin":
+      console.log("Admin router loaded with ID:", userId);
+      return <AdminRouter />;
+    default:
+      return <GuestRouter />;
   }
-  if (role === "user") {
-    console.log("user is logged in", userId);
-    return <UserRouter user={userId} />;
-  }
-  if (role === "admin") {
-    console.log("admin is logged in", userId);
-    return <AdminRouter />;
-  }
-  return null;
 };
 
 export default App;

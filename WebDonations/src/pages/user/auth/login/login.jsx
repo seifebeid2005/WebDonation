@@ -1,37 +1,38 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../../../functions/user/auth';
-import Header from '../../../shared/Header/Header';
-import Footer from '../../../shared/Footer/Footer';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../../../functions/user/auth";
+import Header from "../../../shared/Header/Header";
+import Footer from "../../../shared/Footer/Footer";
+import "./login.css"; // Import your CSS file
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    setError('');
+    setError("");
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
       return;
     }
 
     try {
       const response = await login(email, password);
       if (response.success) {
-        window.location.href = '/';
+        window.location.href = "/";
       } else {
-        setError(response.message || 'Login failed.');
+        setError(response.message || "Login failed.");
       }
     } catch (err) {
-      setError(err.message || 'An error occurred.');
+      setError(err.message || "An error occurred.");
     }
   };
 
   const handleAdminLogin = () => {
-    navigate('/admin-signin');
+    navigate("/admin-signin");
   };
 
   return (
@@ -39,7 +40,28 @@ export default function LoginPage() {
       <Header />
       <StyledWrapper>
         <div className="card">
-          <input defaultValue className="blind-check" type="checkbox" id="blind-input" name="blindcheck" hidden />
+          <div className="admin_login">
+            <button
+              className="admin"
+              onClick={() => (window.location.href = "/admin-signin")}
+            >
+              Admin
+            </button>
+            <button
+              className="admin"
+              onClick={() => (window.location.href = "/register")}
+            >
+              Sign up
+            </button>
+          </div>
+          <input
+            defaultValue
+            className="blind-check"
+            type="checkbox"
+            id="blind-input"
+            name="blindcheck"
+            hidden
+          />
           <label htmlFor="blind-input" className="blind_input">
             <span className="hide">Hide</span>
             <span className="show">Show</span>
@@ -47,7 +69,9 @@ export default function LoginPage() {
 
           <form className="form" onSubmit={(e) => e.preventDefault()}>
             <div className="title">Sign In</div>
-            <label className="label_input" htmlFor="email-input">Email</label>
+            <label className="label_input" htmlFor="email-input">
+              Email
+            </label>
             <input
               spellCheck="false"
               className="input"
@@ -59,7 +83,9 @@ export default function LoginPage() {
             />
 
             <div className="frg_pss">
-              <label className="label_input" htmlFor="password-input">Password</label>
+              <label className="label_input" htmlFor="password-input">
+                Password
+              </label>
               <a href="#">Forgot password?</a>
             </div>
             <input
@@ -72,36 +98,22 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
 
-            {error && <div style={{ color: 'red', margin: '10px 0' }}>{error}</div>}
+            {error && (
+              <div style={{ color: "red", margin: "10px 0" }}>{error}</div>
+            )}
 
             <button className="submit" type="button" onClick={handleSubmit}>
               Login
-            </button>
-
-            <button
-              type="button"
-              className="admin-login-btn"
-              onClick={handleAdminLogin}
-              style={{
-                marginTop: '1rem',
-                backgroundColor: '#3b82f6',
-                color: '#fff',
-                border: 'none',
-                padding: '0.75rem 1.5rem',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                width: '100%',
-                transition: 'background 0.2s'
-              }}
-            >
-              Admin Login
             </button>
           </form>
 
           {/* 👇 This is the good-looking avatar you just shared */}
           <label htmlFor="blind-input" className="avatar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" id="monkey">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 64 64"
+              id="monkey"
+            >
               <ellipse cx="53.7" cy="33" rx="8.3" ry="8.2" fill="#89664c" />
               <ellipse cx="53.7" cy="33" rx="5.4" ry="5.4" fill="#ffc5d3" />
               <ellipse cx="10.2" cy="33" rx="8.2" ry="8.2" fill="#89664c" />
@@ -110,22 +122,53 @@ export default function LoginPage() {
                 <path d="m43.4 10.8c1.1-.6 1.9-.9 1.9-.9-3.2-1.1-6-1.8-8.5-2.1 1.3-1 2.1-1.3 2.1-1.3-20.4-2.9-30.1 9-30.1 19.5h46.4c-.7-7.4-4.8-12.4-11.8-15.2" />
                 <path d="m55.3 27.6c0-9.7-10.4-17.6-23.3-17.6s-23.3 7.9-23.3 17.6c0 2.3.6 4.4 1.6 6.4-1 2-1.6 4.2-1.6 6.4 0 9.7 10.4 17.6 23.3 17.6s23.3-7.9 23.3-17.6c0-2.3-.6-4.4-1.6-6.4 1-2 1.6-4.2 1.6-6.4" />
               </g>
-              <path d="m52 28.2c0-16.9-20-6.1-20-6.1s-20-10.8-20 6.1c0 4.7 2.9 9 7.5 11.7-1.3 1.7-2.1 3.6-2.1 5.7 0 6.1 6.6 11 14.7 11s14.7-4.9 14.7-11c0-2.1-.8-4-2.1-5.7 4.4-2.7 7.3-7 7.3-11.7" fill="#e0ac7e" />
+              <path
+                d="m52 28.2c0-16.9-20-6.1-20-6.1s-20-10.8-20 6.1c0 4.7 2.9 9 7.5 11.7-1.3 1.7-2.1 3.6-2.1 5.7 0 6.1 6.6 11 14.7 11s14.7-4.9 14.7-11c0-2.1-.8-4-2.1-5.7 4.4-2.7 7.3-7 7.3-11.7"
+                fill="#e0ac7e"
+              />
               <g fill="#3b302a" className="monkey-eye-nose">
                 <path d="m35.1 38.7c0 1.1-.4 2.1-1 2.1-.6 0-1-.9-1-2.1 0-1.1.4-2.1 1-2.1.6.1 1 1 1 2.1" />
                 <path d="m30.9 38.7c0 1.1-.4 2.1-1 2.1-.6 0-1-.9-1-2.1 0-1.1.4-2.1 1-2.1.5.1 1 1 1 2.1" />
-                <ellipse cx="40.7" cy="31.7" rx="3.5" ry="4.5" className="monkey-eye-r" />
-                <ellipse cx="23.3" cy="31.7" rx="3.5" ry="4.5" className="monkey-eye-l" />
+                <ellipse
+                  cx="40.7"
+                  cy="31.7"
+                  rx="3.5"
+                  ry="4.5"
+                  className="monkey-eye-r"
+                />
+                <ellipse
+                  cx="23.3"
+                  cy="31.7"
+                  rx="3.5"
+                  ry="4.5"
+                  className="monkey-eye-l"
+                />
               </g>
             </svg>
 
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" id="monkey-hands">
-              <path fill="#89664C" d="M9.4,32.5L2.1,61.9H14c-1.6-7.7,4-21,4-21L9.4,32.5z" />
-              <path fill="#FFD6BB" d="M15.8,24.8c0,0,4.9-4.5,9.5-3.9c2.3,0.3-7.1,7.6-7.1,7.6s9.7-8.2,11.7-5.6c1.8,2.3-8.9,9.8-8.9,9.8
-              s10-8.1,9.6-4.6c-0.3,3.8-7.9,12.8-12.5,13.8C11.5,43.2,6.3,39,9.8,24.4C11.6,17,13.3,25.2,15.8,24.8" />
-              <path fill="#89664C" d="M54.8,32.5l7.3,29.4H50.2c1.6-7.7-4-21-4-21L54.8,32.5z" />
-              <path fill="#FFD6BB" d="M48.4,24.8c0,0-4.9-4.5-9.5-3.9c-2.3,0.3,7.1,7.6,7.1,7.6s-9.7-8.2-11.7-5.6c-1.8,2.3,8.9,9.8,8.9,9.8
-              s-10-8.1-9.7-4.6c0.4,3.8,8,12.8,12.6,13.8c6.6,1.3,11.8-2.9,8.3-17.5C52.6,17,50.9,25.2,48.4,24.8" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 64 64"
+              id="monkey-hands"
+            >
+              <path
+                fill="#89664C"
+                d="M9.4,32.5L2.1,61.9H14c-1.6-7.7,4-21,4-21L9.4,32.5z"
+              />
+              <path
+                fill="#FFD6BB"
+                d="M15.8,24.8c0,0,4.9-4.5,9.5-3.9c2.3,0.3-7.1,7.6-7.1,7.6s9.7-8.2,11.7-5.6c1.8,2.3-8.9,9.8-8.9,9.8
+              s10-8.1,9.6-4.6c-0.3,3.8-7.9,12.8-12.5,13.8C11.5,43.2,6.3,39,9.8,24.4C11.6,17,13.3,25.2,15.8,24.8"
+              />
+              <path
+                fill="#89664C"
+                d="M54.8,32.5l7.3,29.4H50.2c1.6-7.7-4-21-4-21L54.8,32.5z"
+              />
+              <path
+                fill="#FFD6BB"
+                d="M48.4,24.8c0,0-4.9-4.5-9.5-3.9c-2.3,0.3,7.1,7.6,7.1,7.6s-9.7-8.2-11.7-5.6c-1.8,2.3,8.9,9.8,8.9,9.8
+              s-10-8.1-9.7-4.6c0.4,3.8,8,12.8,12.6,13.8c6.6,1.3,11.8-2.9,8.3-17.5C52.6,17,50.9,25.2,48.4,24.8"
+              />
             </svg>
           </label>
         </div>
@@ -165,7 +208,7 @@ const StyledWrapper = styled.div`
     font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
       "Lucida Sans", Arial, sans-serif;
   }
-      height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,9 +238,7 @@ const StyledWrapper = styled.div`
   }
   .avatar svg {
     position: absolute;
-    transition:
-      transform 0.2s ease-in,
-      opacity 0.1s;
+    transition: transform 0.2s ease-in, opacity 0.1s;
     transform-origin: 50% 100%;
     height: var(--sz-svg);
     width: var(--sz-svg);
@@ -273,7 +314,11 @@ const StyledWrapper = styled.div`
   }
   .blind-check:checked ~ .form:focus-within ~ .avatar svg#monkey,
   .blind-check:checked ~ .form:focus-within ~ .avatar::before,
-  .blind-check:checked ~ .form:focus-within ~ .avatar svg#monkey .monkey-eye-nose,
+  .blind-check:checked
+    ~ .form:focus-within
+    ~ .avatar
+    svg#monkey
+    .monkey-eye-nose,
   .blind-check:checked ~ .form:focus-within ~ .avatar svg#monkey .monkey-eye-r,
   .blind-check:checked ~ .form:focus-within ~ .avatar svg#monkey .monkey-eye-l {
     animation: none;
@@ -433,87 +478,85 @@ const StyledWrapper = styled.div`
   .form .frg_pss a:hover {
     color: #000;
   }
-    /* Monkey Avatar */
-.avatar {
-  --sz-avatar: 166px;
-  width: var(--sz-avatar);
-  height: var(--sz-avatar);
-  border: 1px solid #707070;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-  position: relative;
-}
+  /* Monkey Avatar */
+  .avatar {
+    --sz-avatar: 166px;
+    width: var(--sz-avatar);
+    height: var(--sz-avatar);
+    border: 1px solid #707070;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+  }
 
-.avatar svg {
-  height: 100%;
-  width: 100%;
-}
+  .avatar svg {
+    height: 100%;
+    width: 100%;
+  }
 
-/* Form */
-.form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  /* Form */
+  .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
 
-.label_input {
-  align-self: flex-start;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
+  .label_input {
+    align-self: flex-start;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
 
-.input {
-  width: 100%;
-  padding: var(--input-py) var(--input-px);
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
+  .input {
+    width: 100%;
+    padding: var(--input-py) var(--input-px);
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
 
-.frg_pss {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  .frg_pss {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.frg_pss a {
-  font-size: 0.9rem;
-  text-decoration: underline;
-  color: #333;
-}
+  .frg_pss a {
+    font-size: 0.9rem;
+    text-decoration: underline;
+    color: #333;
+  }
 
-.submit {
-  width: 100%;
-  height: var(--submit-h);
-  background: #234c63;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+  .submit {
+    width: 100%;
+    height: var(--submit-h);
+    background: #234c63;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
 
-.submit:hover {
-  background: #2c5364;
-}
-
-    
+  .submit:hover {
+    background: #2c5364;
+  }
 
   .form .submit {
     height: var(--submit-h);
@@ -557,8 +600,3 @@ const StyledWrapper = styled.div`
     -webkit-text-security: disc;
   }
 `;
-
-
-
-
-

@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState, useRef, use } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./Header.css";
 import DarkModeButton from "../darkmodebutton/darkmodebutton";
-import { getUserData } from "../../../functions/user/auth";
-// Import Font Awesome
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { getUserData, logout } from "../../../functions/user/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -18,32 +16,22 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Add icons to library
-library.add(faHome, faInfoCircle, faHandHoldingHeart, faEnvelope, faUser, faHeart, faPlusCircle, faCog, faSignOutAlt);
-
 const Header = ({ activePage }) => {
   const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(window.scrollY);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [userData, setUser] = useState({
-    id: "",
-    name: "",
-    email: "",
-    status: "",
-    created_at: "",
-    updated_at: "",
-  });
+  const [userData, setUser] = useState(null);
+
+  // Hide header on scroll down
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       if (currentScrollY > lastScrollY && currentScrollY > 80) {
         setShowHeader(false);
       } else if (currentScrollY < lastScrollY) {
         setShowHeader(true);
       }
-
       setLastScrollY(currentScrollY);
     };
 
@@ -51,27 +39,35 @@ const Header = ({ activePage }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
-      const userData = await getUserData();
-      if (userData.success) {
-        setUser(userData.user);
-      }
+      const res = await getUserData();
+      setUser(res?.success ? res.user : null);
     };
     fetchUserData();
   }, []);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(event) {
+    const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const toggleDropdown = () => setDropdownOpen((prev) => !prev);
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    const response = await logout();
+    if (response) {
+      window.location.href = "/";
+    }
+  };
 
   return (
     <>
@@ -82,7 +78,6 @@ const Header = ({ activePage }) => {
               Heart<span className="brand-highlight">Bridge</span>
             </Link>
 
-            {/* Dark Mode Toggle */}
             <div style={{ marginLeft: "auto", marginRight: "20px" }}>
               <DarkModeButton />
             </div>
@@ -131,75 +126,88 @@ const Header = ({ activePage }) => {
                     Contact
                   </Link>
                 </li>
+
                 {userData ? (
-                  <>
-                    <li className="user-profile-container" ref={dropdownRef}>
-                      <div
-                        className={`user-profile-icon ${
-                          dropdownOpen ? "active" : ""
-                        }`}
-                        onClick={toggleDropdown}
-                      >
-                        {userData.avatar ? (
-                          <img src={userData.avatar} alt="User avatar" />
-                        ) : (
-                          <div className="user-initial">
-                            {userData.name
-                              ? userData.name.charAt(0).toUpperCase()
-                              : ""}
-                          </div>
-                        )}
-                      </div>
-                      {dropdownOpen && (
-                        <div className="dropdown-menu">
-                          <div className="dropdown-header">
-                            <div className="dropdown-user-info">
-                              <p className="dropdown-user-name">
-                                {userData.name || "User"}
-                              </p>
-                              <p className="dropdown-user-email">
-                                {userData.email || ""}
-                              </p>
-                            </div>
-                          </div>
-                          <ul>
-                            <li>
-                              <Link to="/profile">
-                                <FontAwesomeIcon icon={faUser} /> Profile
-                              </Link>
-                            </li>
-                            <li>
-                              <Link to="/my-donations">
-                                <FontAwesomeIcon icon={faHeart} /> My Donations
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/RequestAddingCause"
-                                className={
-                                  activePage === "request" ? "active" : ""
-                                }
-                              >
-                                <FontAwesomeIcon icon={faPlusCircle} /> Request
-                                Adding
-                              </Link>
-                            </li>
-                            <li>
-                              <Link to="/settings">
-                                <FontAwesomeIcon icon={faCog} /> Settings
-                              </Link>
-                            </li>
-                            <li className="dropdown-divider"></li>
-                            <li>
-                              <Link to="/logout" className="logout-link">
-                                <FontAwesomeIcon icon={faSignOutAlt} /> Logout
-                              </Link>
-                            </li>
-                          </ul>
+                  <li className="user-profile-container" ref={dropdownRef}>
+                    <button
+                      className={`user-profile-icon ${
+                        dropdownOpen ? "active" : ""
+                      }`}
+                      onClick={toggleDropdown}
+                      aria-haspopup="true"
+                      aria-expanded={dropdownOpen}
+                    >
+                      {userData.avatar ? (
+                        <img src={userData.avatar} alt="User avatar" />
+                      ) : (
+                        <div className="user-initial">
+                          {userData.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
-                    </li>
-                  </>
+                    </button>
+                    {dropdownOpen && (
+                      <div className="dropdown-menu">
+                        <div className="dropdown-header">
+                          <div className="dropdown-user-info">
+                            <p className="dropdown-user-name">
+                              {userData.name || "User"}
+                            </p>
+                            <p className="dropdown-user-email">
+                              {userData.email || ""}
+                            </p>
+                          </div>
+                        </div>
+                        <ul>
+                          <li>
+                            <Link
+                              to="/profile"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              <FontAwesomeIcon icon={faUser} /> Profile
+                            </Link>
+                          </li>
+                          {/* <li>
+                            <Link
+                              to="/my-donations"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              <FontAwesomeIcon icon={faHeart} /> My Donations
+                            </Link>
+                          </li> */}
+                          <li>
+                            <Link
+                              to="/RequestAddingCause"
+                              className={
+                                activePage === "request" ? "active" : ""
+                              }
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              <FontAwesomeIcon icon={faPlusCircle} /> Request
+                              Adding
+                            </Link>
+                          </li>
+                          {/* <li>
+                            <Link
+                              to="/settings"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              <FontAwesomeIcon icon={faCog} /> Settings
+                            </Link>
+                          </li> */}
+                          <li className="dropdown-divider"></li>
+                          <li>
+                            <a
+                              href="/logout"
+                              className="logout-link"
+                              onClick={handleLogout}
+                            >
+                              <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </li>
                 ) : (
                   <li>
                     <Link
@@ -218,6 +226,8 @@ const Header = ({ activePage }) => {
         </div>
       </div>
       <div className="header-spacer"></div>
+      <br />
+      <br />
       <br />
       <br />
     </>

@@ -97,3 +97,4 @@ function login($conn, $email, $password) {
         echo json_encode(["success" => false, "message" => "Server error", "error" => $e->getMessage()]);
     }
 }
+?>

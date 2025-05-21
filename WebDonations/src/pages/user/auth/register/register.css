@@ -1,74 +1,281 @@
-.register-container {
+/* Base Styles */
+:root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --secondary-color: #f8f9fa;
+  --text-dark: #212529;
+  --text-light: #6c757d;
+  --text-lighter: #adb5bd;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --border-color: #e9ecef;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition: all 0.2s ease;
+  --container-width: 1100px;
+  --form-width: 420px;
+}
+
+/* Auth Page Layout */
+.auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f7f9fb;
+  background-color: var(--secondary-color);
+  padding: 40px 16px;
 }
-.register-form {
-  width: 370px;
-  padding: 32px 28px;
-  background: #fff;
-  border-radius: 9px;
-  box-shadow: 0 6px 32px rgba(44, 62, 80, 0.15);
+
+.auth-container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+}
+
+.auth-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  background-color: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+@media (min-width: 992px) {
+  .auth-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Left Side - Info/Benefits */
+.auth-info {
+  padding: 50px 40px;
+  background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+  color: white;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  justify-content: center;
 }
-.register-form h2 {
-  text-align: center;
-  color: #234c63;
+
+.auth-info h1 {
+  font-size: 2.25rem;
   margin-bottom: 16px;
   font-weight: 700;
-  letter-spacing: 1px;
 }
-.register-container .input-group {
+
+.auth-info p {
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.auth-benefits {
+  margin-top: 20px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.benefit-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  margin-right: 12px;
+  font-size: 14px;
+}
+
+/* Right Side - Form */
+.auth-form-wrapper {
+  padding: 40px 30px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  justify-content: center;
 }
-.register-container .input-group label {
-  font-size: 1em;
-  color: #234c63;
+
+.auth-form {
+  max-width: var(--form-width);
+  margin: 0 auto;
+  width: 100%;
 }
-.register-container .input-group input {
-  padding: 10px 12px;
-  border: 1.5px solid #dbeafe;
-  border-radius: 6px;
-  font-size: 1em;
-  outline: none;
-  transition: border 0.2s;
-}
-.register-container .input-group input:focus {
-  border-color: #2c5364;
-}
-.error-msg {
-  color: #e74c3c;
-  font-size: 0.98em;
+
+.form-header {
+  margin-bottom: 32px;
   text-align: center;
-  margin: 4px 0;
 }
-button[type="submit"] {
-  background: linear-gradient(90deg, #2c5364 0%, #234c63 100%);
+
+.form-header h2 {
+  font-size: 1.75rem;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.form-header p {
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.form-body {
+  margin-bottom: 24px;
+}
+
+/* Input Styling */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  transition: var(--transition);
+}
+
+.input-group input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+  outline: none;
+}
+
+.input-group input::placeholder {
+  color: var(--text-lighter);
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-top: 6px;
+}
+
+/* Messages */
+.message {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.message.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.message.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Button */
+.submit-button {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 6px;
-  padding: 12px 0;
-  font-size: 1.08em;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 1px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: var(--transition);
+  margin-top: 12px;
 }
-button[type="submit"]:hover {
-  background: linear-gradient(90deg, #234c63 0%, #2c5364 100%);
+
+.submit-button:hover {
+  background-color: var(--primary-hover);
 }
-.switch-link {
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.3);
+}
+
+.submit-button.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* Form Footer */
+.form-footer {
   text-align: center;
-  font-size: 0.98em;
+}
+
+.switch-link {
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.switch-link a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
+
+.terms-text {
+  font-size: 0.8rem;
+  color: var(--text-light);
   margin-top: 8px;
 }
-.switch-link a {
-  color: #234c63;
+
+.terms-text a {
+  color: var(--text-dark);
   text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .auth-info {
+    display: none;
+  }
+
+  .auth-form-wrapper {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .input-group input {
+    padding: 12px 14px;
+  }
+
+  .submit-button {
+    padding: 12px;
+  }
 }
