@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { verifyRandomPaymentAndUpdate } from "../../../functions/user/donations";
+import { verifyRandomPaymentAndUpdate } from "../../../functions/user/randomdonations";
 import { format } from "date-fns";
 import {
   FaCheckCircle,
@@ -153,28 +153,34 @@ export default function ThankYouPage() {
   // Show donation not found
   if (!donation && !loading) {
     return (
-      <div className="container">
-        <div className="thank-you-card">
-          <div className="not-found">
-            <div className="card-icon" style={{ color: "#ff9800" }}>
-              <FaSearch size={60} />
-            </div>
-            <h2>Donation Not Found</h2>
-            <p>
-              We couldn't find any donation with the provided reference ID.
-              Please check the ID and try again.
-            </p>
-            <div className="actions">
-              <button
-                className="btn btn-secondary"
-                onClick={() => navigate("/")}
-              >
-                <FaHome /> Return to Home
-              </button>
+      <>
+        <Header />
+        <div className="thankYouPage">
+          <div className="container">
+            <div className="thank-you-card">
+              <div className="not-found">
+                <div className="card-icon" style={{ color: "#ff9800" }}>
+                  <FaSearch size={60} />
+                </div>
+                <h2>Donation Not Found</h2>
+                <p>
+                  We couldn't find any donation with the provided reference ID.
+                  Please check the ID and try again.
+                </p>
+                <div className="actions">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => navigate("/")}
+                  >
+                    <FaHome /> Return to Home
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 

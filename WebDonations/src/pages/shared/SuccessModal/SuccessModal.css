@@ -1,0 +1,73 @@
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(20, 40, 60, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.success-modal-content {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.18);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 320px;
+  text-align: center;
+  position: relative;
+  animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.success-checkmark {
+  font-size: 3.5rem;
+  color: #36b37e;
+  margin-bottom: 1rem;
+  animation: bounce 0.7s;
+}
+
+.success-message {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.success-close-btn {
+  background: #36b37e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 1.5em;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.success-close-btn:hover {
+  background: #278a5d;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes bounce {
+  0% {
+    transform: scale(0.7);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

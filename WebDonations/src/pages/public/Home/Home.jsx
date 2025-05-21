@@ -12,7 +12,7 @@ import FancyDonateButton from "../../shared/FancyDonateButton/FancyDonateButton"
 import RotatingWords from "../../shared/RotatingWords/RotatingWords";
 import RateUsStars from "../../shared/rateusstars/rateusestars";
 import ProceedToPaymentButton from "../../shared/paymentcoolicon/paymenticon";
-import { handleRandomDonation } from "../../../functions/user/donations";
+import { handleRandomDonation } from "../../../functions/user/randomdonations";
 // Team data
 
 const TEAM_MEMBERS = [

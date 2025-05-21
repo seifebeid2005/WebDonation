@@ -1,41 +1,116 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { getCauseById } from "../../../functions/user/causes";
+import {
+  handleCauseDonation,
+  verifyCausePaymentAndUpdate,
+} from "../../../functions/user/donations"; // Import your new function!
 import "./causesdetails.css";
+import SuccessModal from "../../shared/SuccessModal/SuccessModal";
+
+import { getUserData } from "../../../functions/user/auth";
 import Footer from "../../shared/Footer/Footer";
 import Header from "../../shared/Header/Header";
 import Loader from "../../shared/Loader/Loader";
-import { createPaymentIntention } from "../../../functions/payment";
-import UUID from "react-uuid";
-// Helper to get query param value
+// import AuthContext from ...  // If you are using context for user data
 
+// Helper to get query param value
 function getQueryParam(param) {
   return new URLSearchParams(window.location.search).get(param);
 }
 
 export default function CauseDetailsPage() {
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [cause, setCause] = useState(null);
   const [loading, setLoading] = useState(true);
   const [donationAmount, setDonationAmount] = useState("");
   const [error, setError] = useState("");
+  const [processing, setProcessing] = useState(false);
+  const [user, setuser] = useState(null); // Placeholder for user state
+  const merchantOrderIdFromUrl = getQueryParam("merchant_order_id");
 
   useEffect(() => {
-    const causeId = getQueryParam("causeId");
-    if (!causeId) {
-      setError("No cause ID provided in the URL.");
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    getCauseById(causeId)
-      .then((c) => {
-        if (!c) setError("Cause not found.");
-        setCause(c);
+    if (!merchantOrderIdFromUrl) return;
+
+    let isMounted = true;
+
+    const verifyPayment = async () => {
+      try {
+        const result = await verifyCausePaymentAndUpdate(
+          merchantOrderIdFromUrl
+        );
+        if (!isMounted) return;
+        console.log("Payment verification result:", result);
+        if (result.status == "confirmed") {
+          setSuccessMessage(
+            "Your donation was successful and the cause total has been updated!"
+          );
+          setShowSuccessModal(true);
+          // Optionally, refresh cause data to reflect new raised amount
+          setLoading(true);
+          const causeId = getQueryParam("causeId");
+          if (causeId) {
+            getCauseById(causeId)
+              .then((c) => {
+                setCause(c);
+                setLoading(false);
+              })
+              .catch(() => setLoading(false));
+          }
+        } else {
+          setSuccessMessage("Payment verification failed.");
+          setShowSuccessModal(true);
+        }
+      } catch (error) {
+        if (!isMounted) return;
+        console.error("Error verifying payment:", error);
+        setSuccessMessage("Error verifying payment. Please try again.");
+        setShowSuccessModal(true);
+      }
+    };
+
+    verifyPayment();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [merchantOrderIdFromUrl]);
+  // i want after geting the url this refresh the page
+  useEffect(() => {
+    const fetchCause = () => {
+      const causeId = getQueryParam("causeId");
+      if (!causeId) {
+        setError("No cause ID provided in the URL.");
         setLoading(false);
-      })
-      .catch((e) => {
-        setError(e.message || "Failed to load cause details.");
-        setLoading(false);
-      });
+        return;
+      }
+      setLoading(true);
+      getCauseById(causeId)
+        .then((c) => {
+          if (!c) setError("Cause not found.");
+          setCause(c);
+          setLoading(false);
+        })
+        .catch((e) => {
+          setError(e.message || "Failed to load cause details.");
+          setLoading(false);
+        });
+    };
+    fetchCause();
+  }, []);
+
+  useEffect(() => {
+    // Simulate fetching user data
+    const fetchUser = async () => {
+      const data = await getUserData();
+      if (data) {
+        setuser(data.user);
+        console.log("User data:", data.user);
+      } else {
+        setuser(null);
+      }
+    };
+    fetchUser();
   }, []);
 
   const handleDonate = async () => {
@@ -44,57 +119,43 @@ export default function CauseDetailsPage() {
       alert("Please enter a valid donation amount.");
       return;
     }
+    if (!user) {
+      alert("You must be logged in to donate.");
+      return;
+    }
 
+    setProcessing(true);
+    setError("");
     try {
-      // Show loading indicator or disable button here
-      const merchantOrderId = UUID();
+      // Create donation record and get payment URL
 
-      // Get user data from context/state/props or use default values
-      const user = {
-        name: "John Doe", // Replace with actual user name from your auth context
-        phone: "01012345678", // Replace with actual user phone
-        email: "john.doe@example.com", // Replace with actual user email
-      };
-
-      console.log("Creating payment intent...");
-      // put in the database
-      
-      const paymentIntent = await createPaymentIntention({
-        user,
-        totalAmount: amount, // Note the parameter name change from amount to totalAmount
-        donation: {
-          id: cause.id,
-          message: cause.title || "Donation to cause",
-        },
-        merchantOrderId,
-      });
-
-      if (paymentIntent.success) {
-        console.log("Payment Intent Created:", paymentIntent);
-        // Redirect to the payment page
-        window.location.href = paymentIntent.redirectUrl;
+      const donationResult = await handleCauseDonation(user, cause.id, amount);
+      console.log("Donation Result:", donationResult);
+      if (donationResult.success && donationResult.paymentUrl) {
+        // Redirect to payment
+        window.location.href = donationResult.paymentUrl;
       } else {
-        console.error("Error details:", paymentIntent.error);
-        alert("Failed to process payment. Please try again.");
+        setError(
+          donationResult.message ||
+            "Failed to process payment. Please try again."
+        );
       }
     } catch (error) {
-      console.error("Error creating payment intent:", error);
-      alert("Failed to process donation. Please try again later.");
+      setError(
+        error?.message || "Failed to process donation. Please try again later."
+      );
+    } finally {
+      setProcessing(false);
     }
   };
 
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (error) {
+  if (loading) return <Loader />;
+  if (error)
     return (
       <div className="error-container">
         <div className="error-message">{error}</div>
       </div>
     );
-  }
-
   if (!cause) return null;
 
   // Calculate progress percentage
@@ -180,10 +241,15 @@ export default function CauseDetailsPage() {
                   onChange={(e) =>
                     setDonationAmount(e.target.value.replace(/[^0-9.]/g, ""))
                   }
+                  disabled={processing}
                 />
               </div>
-              <button onClick={handleDonate} className="detail-button">
-                Donate Now
+              <button
+                onClick={handleDonate}
+                className="detail-button"
+                disabled={processing}
+              >
+                {processing ? "Processing..." : "Donate Now"}
               </button>
             </div>
 
@@ -197,6 +263,11 @@ export default function CauseDetailsPage() {
           </div>
         </div>
       </div>
+      <SuccessModal
+        open={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        message={successMessage}
+      />
       <Footer />
     </>
   );

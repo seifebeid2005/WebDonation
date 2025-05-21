@@ -1,35 +1,31 @@
 import APIURL from "../baseurl.js";
 import { v4 as uuidv4 } from "uuid";
 import {
-  createPaymentIntention,
+  createRandomPaymentIntention,
   checkPaymentStatus,
-} from "../../functions/payment.js";
+} from "../payment.js";
 import { sendDonationConfirmationEmail } from "../email.js";
 
-const API_URL = `${APIURL}user/CRUDdonation.php`;
+const API_URL = `${APIURL}user/CRUDrandomdonation.php`;
 
-export async function handleCauseDonation(user, causeId, amount, message = "") {
+export async function handleRandomDonation(user, amount, message = "") {
   if (!amount || amount <= 0) {
     console.error("Missing or invalid amount:", amount);
-    throw new Error("Valid amount is required for cause donation");
-  }
-  if (!causeId) {
-    throw new Error("Cause ID is required for cause donation");
+    throw new Error("Valid amount is required for random donation");
   }
 
   // Generate a unique merchant order ID
   const merchantOrderId = uuidv4();
 
   try {
-    // 1. Create donation record in database
+    // 1. Create random donation record in database
     const donationData = {
       operation: "insert",
-      user_id: user.id,
-      cause_id: causeId,
       amount: parseFloat(amount), // Ensure amount is a number
       merchent_order_id: merchantOrderId,
       email: user.email,
     };
+    console.log("User data:", user);
 
     const donationResult = await fetch(API_URL, {
       method: "POST",
@@ -39,26 +35,27 @@ export async function handleCauseDonation(user, causeId, amount, message = "") {
     });
 
     const donationResponse = await donationResult.json();
+    console.log("Random donation API response:", donationResponse);
+
     if (!donationResult.ok || !donationResponse.success) {
       const errorMsg =
-        donationResponse.message || "Failed to create donation record";
-      console.error("Donation API error:", donationResponse);
+        donationResponse.message || "Failed to create random donation record";
+      console.error("Random donation API error:", donationResponse);
       throw new Error(errorMsg);
     }
-    console.log("Donation record created:", donationResponse);
 
-    // 2. Initialize payment with Paymob (or your payment gateway)
-    const paymentResult = await createPaymentIntention({
+    // 2. Initialize payment with Paymob
+    const paymentResult = await createRandomPaymentIntention({
       user,
       totalAmount: parseFloat(amount),
       donation: {
         id: donationResponse.donation.id || 0,
-        cause_id: causeId,
-        message: message || "Donation to cause",
+        message: message || "Random Donation",
       },
       merchantOrderId,
     });
 
+    // Return donation info and payment redirect URL
     if (!paymentResult || !paymentResult.redirectUrl) {
       console.error("Payment initialization failed:", paymentResult);
       throw new Error("Failed to initialize payment");
@@ -70,12 +67,12 @@ export async function handleCauseDonation(user, causeId, amount, message = "") {
       merchantOrderId,
     };
   } catch (error) {
-    console.error("Cause donation process failed:", error);
+    console.error("Random donation process failed:", error);
     throw error;
   }
 }
 
-export async function updateDonationStatus(updateData) {
+export async function updateRandomDonationStatus(updateData) {
   if (!updateData.merchent_order_id || !updateData.status) {
     throw new Error("Merchant order ID and status are required");
   }
@@ -91,64 +88,73 @@ export async function updateDonationStatus(updateData) {
     });
 
     const data = await res.json();
+    console.log("Update random donation status response:", data);
     if (!res.ok || data.success === false) {
-      throw new Error(data.message || "Failed to update donation status");
+      throw new Error(
+        data.message || "Failed to update random donation status"
+      );
     }
+
     return data.donation;
   } catch (error) {
-    console.error("Donation status update failed:", error);
+    console.error("Status update failed:", error);
     throw error;
   }
 }
 
-export async function verifyCausePaymentAndUpdate(merchantOrderId) {
+export async function verifyRandomPaymentAndUpdate(merchantOrderId) {
   if (!merchantOrderId) {
     throw new Error("Merchant order ID is required");
   }
 
   try {
-    // Check payment status with Paymob or your gateway
+    // Check payment status with Paymob
     const paymentStatus = await checkPaymentStatus(merchantOrderId);
-    const newStatus = paymentStatus ? "confirmed" : "failed";
+    console.log("Payment status:", paymentStatus);
+
+    // Update donation status based on payment result
+    const status = paymentStatus ? "completed" : "failed";
 
     // Fetch donation data from database
-    const donationData = await getDonationByMerchantOrderId(merchantOrderId);
-    if (!donationData) {
+    const getData = {
+      operation: "get",
+      merchent_order_id: merchantOrderId,
+    };
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(getData),
+    });
+
+    const donationData = await res.json();
+
+    if (!donationData.success || !donationData.donation) {
       throw new Error("Failed to retrieve donation data");
     }
 
-    // If the donation is already confirmed, do NOTHING (no update, no raised_amount update)
-    if (donationData.status === "confirmed") {
-      return donationData;
-    }
+    // Update donation status
+    const updatedDonation = await updateRandomDonationStatus({
+      merchent_order_id: merchantOrderId,
+      status: status,
+    });
 
-    // If not already confirmed, update status and raised_amount if payment succeeded
-    let updatedDonation = donationData;
-    if (newStatus === "confirmed") {
-      // Update donation status
-      updatedDonation = await updateDonationStatus({
-        merchent_order_id: merchantOrderId,
-        status: "confirmed",
-      });
-
-      // Update cause raised amount (only once, since donation was not confirmed before)
-      await updateCauseRaisedAmount(donationData.cause_id, donationData.amount);
-
-      // Send confirmation email
+    // Send confirmation email if payment was successful
+    if (status === "completed") {
       try {
+        // Fixed: Use the proper parameters for email sending
+        console.log("Sending confirmation email...");
+        console.log("Donation data:", donationData.donation.email);
         await sendDonationConfirmationEmail(
-          donationData.email,
-          parseFloat(donationData.amount)
+          donationData.donation.email,
+          parseFloat(donationData.donation.amount)
         );
+        console.log("Donation confirmation email sent successfully");
       } catch (emailError) {
         console.error("Failed to send confirmation email:", emailError);
+        // Don't throw error here - we still want to return the updated donation
       }
-    } else if (donationData.status !== "failed") {
-      // If failed and not already failed, update to failed
-      updatedDonation = await updateDonationStatus({
-        merchent_order_id: merchantOrderId,
-        status: "failed",
-      });
     }
 
     return updatedDonation;
@@ -177,6 +183,7 @@ export async function getDonationByMerchantOrderId(merchantOrderId) {
     });
 
     const data = await res.json();
+
     if (!res.ok || data.success === false) {
       throw new Error(data.message || "Failed to retrieve donation");
     }
@@ -184,38 +191,6 @@ export async function getDonationByMerchantOrderId(merchantOrderId) {
     return data.donation;
   } catch (error) {
     console.error("Error retrieving donation:", error);
-    throw error;
-  }
-}
-
-export async function updateCauseRaisedAmount(causeId, amount) {
-  if (!causeId || !amount || amount <= 0) {
-    throw new Error(
-      "Cause ID and a positive amount are required to update raised amount."
-    );
-  }
-
-  const payload = {
-    operation: "update_cause_raised",
-    cause_id: causeId,
-    amount: parseFloat(amount),
-  };
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-    if (!res.ok || data.success === false) {
-      throw new Error(data.message || "Failed to update cause raised amount");
-    }
-    return data;
-  } catch (error) {
-    console.error("Error updating cause raised amount:", error);
     throw error;
   }
 }

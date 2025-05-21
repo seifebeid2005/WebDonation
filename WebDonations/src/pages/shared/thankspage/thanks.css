@@ -1,4 +1,4 @@
-:root {
+.thankYouPage :root {
   --primary-color: #4caf50;
   --secondary-color: #2196f3;
   --danger-color: #f44336;
@@ -10,14 +10,14 @@
   --transition: all 0.3s ease;
 }
 
-.container {
+.thankYouPage .container {
   max-width: 900px;
   margin: 50px auto;
   padding: 0 20px;
   flex: 1;
 }
 
-.thank-you-card {
+.thankYouPage .thank-you-card {
   background-color: white;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);

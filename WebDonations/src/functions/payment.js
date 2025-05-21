@@ -55,7 +55,7 @@ export async function createPaymentIntention({
   // Prepare billing data
   const billingData = {
     first_name: firstName,
-    last_name: lastName,
+    last_name: "ebeid",
     phone_number: phone,
     email: email,
   };
@@ -72,7 +72,7 @@ export async function createPaymentIntention({
     items,
     billing_data: billingData,
     special_reference: merchantOrderId,
-    redirection_url: `http://localhost/DonationPlatform/donationresult?type=standard&merchantOrderId=${merchantOrderId}`,
+    redirection_url: `http://localhost:5173/causesdetails?causeId=${donation.cause_id}&merchant_order_id=${merchantOrderId}`,
   };
 
   // Send request
@@ -116,8 +116,8 @@ export async function createRandomPaymentIntention({
   ];
 
   const billingData = {
-    first_name: firstName,
-    last_name: lastName,
+    first_name: firstName || "Seif",
+    last_name: "ebeid",
     phone_number: phone,
     email: email,
   };
