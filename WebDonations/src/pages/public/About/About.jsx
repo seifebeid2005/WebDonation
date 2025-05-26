@@ -3,6 +3,7 @@ import { motion, useInView, useAnimation } from "framer-motion";
 import "./About.css";
 import Header from "../../shared/Header/Header";
 import Footer from "../../shared/Footer/Footer";
+import Cherine from "../../../assets/cherine.jpeg";
 
 // Timeline data
 const TIMELINE_EVENTS = [
@@ -68,7 +69,7 @@ const TEAM_MEMBERS = [
     name: "Cherine Hassan",
     title: "Outreach Coordinator",
     bio: "Cherine builds partnerships with communities and organizations to expand our impact.",
-    img: "https://firebasestorage.googleapis.com/v0/b/readspace-b5434.appspot.com/o/pic%2Fcherine.jpeg?alt=media&token=850aadfe-50f0-4a18-9c65-c562442e6db8",
+    img: Cherine,
   },
   {
     name: "Mayar Fathi",

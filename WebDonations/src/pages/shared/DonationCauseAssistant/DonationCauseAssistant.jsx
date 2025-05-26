@@ -23,7 +23,6 @@ function daysLeft(endDate) {
   return diff < 0 ? 0 : diff;
 }
 
-// Compose a context string for Gemini (all causes)
 function causesToContext(causes) {
   if (!causes.length) return "No causes currently available.";
   return (
@@ -55,13 +54,27 @@ function causesToContext(causes) {
   );
 }
 
-// Main ChatBot
+// Build prompt for Gemini to return ONLY a JSON object for the urgent cause
+function buildUrgentPrompt(causes) {
+  return (
+    "Given the following array of donation causes, " +
+    "select ONLY the most urgent cause using these rules: " +
+    "ONLY causes where is_active is true and status is 'open'; " +
+    "featured causes (is_featured) have the highest priority, " +
+    "then causes ending soonest (end_date), then the least funds raised compared to their goal (raised_amount / goal_amount). " +
+    "Return ONLY the most urgent cause as a strict JSON object (with all fields), and nothing else. " +
+    "Do NOT include any explanation or summary or extra text. " +
+    "If there are no urgent causes, only return an empty object {}. " +
+    "Here is the array:\n" +
+    JSON.stringify(causes, null, 2)
+  );
+}
+
 export default function DonationCauseChatBot() {
   const [open, setOpen] = useState(false);
   const [causes, setCauses] = useState([]);
   const [loadingCauses, setLoadingCauses] = useState(true);
   const apiUrl = APIURL + "/user/causes.php"; // Adjust to your API endpoint
-
   const [chat, setChat] = useState([
     {
       role: "assistant",
@@ -130,17 +143,88 @@ export default function DonationCauseChatBot() {
     if (!input.trim() || typing || loadingCauses) return;
     setChat((prev) => [...prev, { role: "user", text: input.trim() }]);
     setInput("");
-    // Compose context for Gemini
-    const context =
-      causesToContext(causes) +
-      "User question: " +
-      input.trim() +
-      "\n\nRespond conversationally. If user asks about urgent cause, pick the most urgent cause using these rules: only is_active causes with status 'open', then featured ones first, then soonest end_date, then lowest percent raised. Otherwise answer normally, giving numbers and details as you can.";
+    let prompt;
+    const isUrgent =
+      input.trim().toLowerCase().includes("urgent") ||
+      input.trim().toLowerCase().includes("most urgent") ||
+      input.trim().toLowerCase().includes("need") ||
+      input.trim().toLowerCase().includes("priority");
+    if (isUrgent) {
+      prompt = buildUrgentPrompt(causes);
+    } else {
+      // For normal questions, fallback to previous context
+      prompt = causesToContext(causes) + "User question: " + input.trim();
+    }
     try {
-      const aiResp = await askGemini(context);
+      const aiResp = await askGemini(prompt);
+
+      // Try to parse JSON if urgent prompt
+      if (isUrgent) {
+        let causeObj;
+        try {
+          // Try to find object in response string
+          const match = aiResp.match(/\{[\s\S]*\}/);
+          if (match) {
+            causeObj = JSON.parse(match[0]);
+          } else if (aiResp.trim() === "{}") {
+            causeObj = {};
+          } else {
+            throw new Error("No JSON object found.");
+          }
+        } catch {
+          setChat((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              text: "Sorry, I couldn't extract a cause from the AI response. Try again.",
+            },
+          ]);
+          setTyping(false);
+          return;
+        }
+        // No urgent causes
+        if (!causeObj || Object.keys(causeObj).length === 0) {
+          setChat((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              text: "There are no urgent causes needing donations at the moment.",
+            },
+          ]);
+          setTyping(false);
+          return;
+        }
+        // Pretty print only the cause details
+        setChat((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            text:
+              `Most urgent cause:\n` +
+              `Title: ${causeObj.title}\n` +
+              (causeObj.short_description
+                ? `Short Description: ${causeObj.short_description}\n`
+                : "") +
+              (causeObj.end_date
+                ? `Ends in: ${daysLeft(causeObj.end_date)} days\n`
+                : "") +
+              `Funds: ${formatCurrency(
+                causeObj.raised_amount,
+                causeObj.currency
+              )} / ${formatCurrency(
+                causeObj.goal_amount,
+                causeObj.currency
+              )}\n` +
+              (causeObj.is_featured ? "This is a featured cause!\n" : ""),
+          },
+        ]);
+        setTyping(false);
+        return;
+      }
+
+      // For normal Q&A, type out the response
       typeMessage(aiResp);
     } catch (err) {
-      setError("Sorry, there was a problem contacting the AI.");
       setChat((prev) => [
         ...prev,
         {
