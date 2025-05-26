@@ -13,14 +13,12 @@ const admin = {
 const DASHBOARD_STATS_URL = `${APIURL}admin/dashboard_stats.php`;
 const API_BASE_URL = `${APIURL}admin/causes.php`;
 
-// Helper for formatting date
 const formatDate = (date) => {
   if (!date) return "";
   if (typeof date === "string") date = new Date(date);
   return date.toISOString().slice(0, 16).replace("T", " ");
 };
 
-// Helper for formatting currency
 const formatCurrency = (amount, currency = "USD") => {
   return (
     currency +
@@ -33,11 +31,10 @@ const formatCurrency = (amount, currency = "USD") => {
 };
 
 function AdminDashboard() {
-  // Dashboard state
   const [causes, setCauses] = useState([]);
   const [stats, setStats] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); // "add" or "edit"
+  const [modalMode, setModalMode] = useState("add");
   const [editingCause, setEditingCause] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -47,7 +44,6 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const formRef = useRef();
 
-  // Fetch causes and stats on component mount
   useEffect(() => {
     fetchCauses();
     fetchStats();
@@ -80,16 +76,14 @@ function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(DASHBOARD_STATS_URL, { withCredentials: true });
+      const response = await axios.get(DASHBOARD_STATS_URL, {
+        withCredentials: true,
+      });
       setStats(response.data);
     } catch (error) {
       setStats({});
     }
   };
-
-  // Stats
-  const totalRaised = causes.reduce((sum, c) => sum + c.raisedAmount, 0);
-  const donorCount = 12 + causes.length * 5;
 
   // Modal open/close
   const openAddCauseModal = () => {
@@ -99,14 +93,14 @@ function AdminDashboard() {
       description: "",
       short_description: "",
       image_url: "",
-      goalAmount: "",
-      raisedAmount: "",
+      goal_amount: "",
+      raised_amount: "",
       currency: "USD",
       category: "",
-      startDate: "",
-      endDate: "",
-      isFeatured: 0,
-      isActive: 1,
+      start_date: "",
+      end_date: "",
+      is_featured: 0,
+      is_active: 1,
       status: "pending",
     });
     setEditingCause(null);
@@ -148,11 +142,10 @@ function AdminDashboard() {
   // Form change
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === "checkbox") {
-      setForm((f) => ({ ...f, [name]: checked ? 1 : 0 }));
-    } else {
-      setForm((f) => ({ ...f, [name]: value }));
-    }
+    setForm((f) => ({
+      ...f,
+      [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
+    }));
   };
 
   // Add/Edit submit
@@ -176,22 +169,20 @@ function AdminDashboard() {
         raised_amount: parseFloat(form.raised_amount) || 0,
         currency: form.currency,
         category: form.category,
-        start_date: form.startDate || null,
-        end_date: form.endDate || null,
-        is_featured: form.isFeatured ? 1 : 0,
-        is_active: form.isActive ? 1 : 0,
+        start_date: form.start_date || null,
+        end_date: form.end_date || null,
+        is_featured: form.is_featured ? 1 : 0,
+        is_active: form.is_active ? 1 : 0,
         status: form.status,
       };
       if (modalMode === "edit") {
         causeData.id = editingCause.id;
-        causeData.created_at = form.createdAt;
-        causeData.updated_at = form.updatedAt;
+        causeData.created_at = form.created_at;
+        causeData.updated_at = form.updated_at;
       }
       const response = await axios.post(API_BASE_URL, causeData, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
       let responseData = response.data;
       if (typeof responseData === "string") {
@@ -229,56 +220,37 @@ function AdminDashboard() {
   // Delete cause
   const confirmDelete = (id) => {
     if (!id) return;
-    console.log("Confirming delete for ID:", id);
     setDeleteId(id);
     setShowDeleteModal(true);
   };
 
   const handleDelete = async () => {
     const idToDelete = deleteId;
-    if (!idToDelete) {
-      console.log("No delete ID set");
-      return;
-    }
-
+    if (!idToDelete) return;
     try {
       const response = await axios.post(
         API_BASE_URL,
-        {
-          action: "delete",
-          id: idToDelete,
-        },
+        { action: "delete", id: idToDelete },
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
-
       let responseData = response.data;
       if (typeof responseData === "string") {
         responseData = responseData.replace(/^\uFEFF/, "");
         responseData = JSON.parse(responseData);
       }
-
       if (responseData.success) {
-        // Update the causes list immediately
         setCauses((prevCauses) =>
           prevCauses.filter((cause) => cause.id !== idToDelete)
         );
-
-        // Show success message
         setAlert({
           type: "success",
           message: responseData.message || "Cause deleted successfully!",
         });
-
-        // Close modal and reset state
         setShowDeleteModal(false);
         setDeleteId(null);
-
-        // Refresh the causes list from the server
         await fetchCauses();
       } else {
         throw new Error(
@@ -286,34 +258,19 @@ function AdminDashboard() {
         );
       }
     } catch (error) {
-      console.error("Error deleting cause:", error);
       setAlert({
         type: "error",
         message: error.message || "Failed to delete cause. Please try again.",
       });
-      // Reset delete state on error
       setShowDeleteModal(false);
       setDeleteId(null);
     }
   };
 
-  // Update the delete button in the table
-  const renderDeleteButton = (causeId) => (
-    <button
-      className="btn-action btn-delete"
-      onClick={(e) => {
-        e.stopPropagation(); // Prevent event bubbling
-        confirmDelete(causeId);
-      }}
-    >
-      <i className="fas fa-trash"></i> Delete
-    </button>
-  );
-
   // Remove image preview
   const removeImagePreview = () => {
     setImagePreview(null);
-    setForm((f) => ({ ...f, image: null, imageUrl: "" }));
+    setForm((f) => ({ ...f, image: null, image_url: "" }));
     if (formRef.current) formRef.current.reset();
   };
 
@@ -332,8 +289,8 @@ function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
+      <div className="pro-loading-container">
+        <div className="pro-spinner"></div>
         <p>Loading causes...</p>
       </div>
     );
@@ -341,27 +298,27 @@ function AdminDashboard() {
 
   return (
     <AdminLayout admin={admin} activePage="dashboard">
-      {/* Main Content */}
-      <div className="header">
+      {/* Header */}
+      <div className="pro-header">
         <h1>
           <i className="fas fa-tachometer-alt"></i> Dashboard Overview
         </h1>
-        <div className="stats-summary">
-          <div className="stat-card">
+        <div className="pro-stats-row">
+          <div className="pro-stat-card">
             <i className="fas fa-hand-holding-heart"></i>
             <div>
               <h3>{stats.activeCauses}</h3>
               <p>Active Causes</p>
             </div>
           </div>
-          <div className="stat-card">
+          <div className="pro-stat-card">
             <i className="fas fa-dollar-sign"></i>
             <div>
               <h3>{formatCurrency(stats.totalRaised)}</h3>
               <p>Total Raised</p>
             </div>
           </div>
-          <div className="stat-card">
+          <div className="pro-stat-card">
             <i className="fas fa-users"></i>
             <div>
               <h3>{stats.totalDonors}</h3>
@@ -369,11 +326,10 @@ function AdminDashboard() {
             </div>
           </div>
         </div>
-        
       </div>
       {/* Alerts */}
       {alert.message && (
-        <div className={`alert alert-${alert.type}`}>
+        <div className={`pro-alert pro-alert-${alert.type}`}>
           <i
             className={
               alert.type === "success"
@@ -383,30 +339,34 @@ function AdminDashboard() {
           />{" "}
           {alert.message}
           <span
-            className="close-btn"
+            className="pro-alert-close"
             onClick={() => setAlert({ type: "", message: "" })}
           >
             &times;
           </span>
         </div>
       )}
-      <div className="content-section">
-        <div className="section-header">
+      {/* Content Section */}
+      <div className="pro-content">
+        <div className="pro-content-header">
           <h2>
             <i className="fas fa-hand-holding-heart"></i> Current Causes
           </h2>
-          <button className="btn btn-primary" onClick={openAddCauseModal}>
+          <button
+            className="pro-btn pro-btn-primary"
+            onClick={openAddCauseModal}
+          >
             <i className="fas fa-plus"></i> Add Cause
           </button>
         </div>
-        <div className="table-responsive">
-          <table className="data-table">
+        <div className="pro-table-wrapper">
+          <table className="pro-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Goal Amount</th>
+                <th>Goal</th>
                 <th>Raised</th>
                 <th>Progress</th>
                 <th>Status</th>
@@ -417,19 +377,19 @@ function AdminDashboard() {
             </thead>
             <tbody>
               {causes.length ? (
-                causes.map((cause) => (
+                causes.map((cause, idx) => (
                   <tr key={cause.id}>
-                    <td>{cause.id}</td>
+                    <td>{idx + 1}</td>
                     <td>
-                      <div className="cause-title">
-                        {cause.imageUrl ? (
+                      <div className="pro-cause-title">
+                        {cause.image_url ? (
                           <img
-                            src={cause.imageUrl}
+                            src={cause.image_url}
                             alt={cause.title}
-                            className="cause-thumbnail"
+                            className="pro-cause-thumb"
                           />
                         ) : (
-                          <div className="cause-thumbnail placeholder">
+                          <div className="pro-cause-thumb pro-thumb-placeholder">
                             <i className="fas fa-image"></i>
                           </div>
                         )}
@@ -437,62 +397,69 @@ function AdminDashboard() {
                       </div>
                     </td>
                     <td>
-                      <span className="badge badge-category">
+                      <span className="pro-badge pro-badge-category">
                         {cause.category}
                       </span>
                     </td>
-                    <td>
-                      {formatCurrency(cause.goal_amount, cause.currency)}
-                    </td>
+                    <td>{formatCurrency(cause.goal_amount, cause.currency)}</td>
                     <td>
                       {formatCurrency(cause.raised_amount, cause.currency)}
                     </td>
                     <td>
-                      <div className="progress-container">
+                      <div className="pro-progress-bar-bg">
                         <div
-                          className="progress-bar"
+                          className="pro-progress-bar"
                           style={{ width: `${getProgress(cause)}%` }}
                         ></div>
-                        <span className="progress-text">
+                        <span className="pro-progress-text">
                           {getProgress(cause).toFixed(1)}%
                         </span>
                       </div>
                     </td>
                     <td>
                       <span
-                        className={
-                          "badge " +
-                          (cause.isActive ? "badge-success" : "badge-warning")
-                        }
+                        className={`pro-badge ${
+                          cause.is_active
+                            ? "pro-badge-success"
+                            : "pro-badge-warning"
+                        }`}
                       >
-                        {cause.isActive ? "Active" : "Inactive"}
+                        {cause.is_active ? "Active" : "Inactive"}
                       </span>
                     </td>
                     <td>
-                      {cause.isFeatured ? (
-                        <i className="fas fa-star featured-icon"></i>
+                      {cause.is_featured ? (
+                        <i className="fas fa-star pro-featured-icon"></i>
                       ) : (
                         <i className="far fa-star"></i>
                       )}
                     </td>
-                    <td>{formatDate(cause.createdAt)}</td>
-                    <td className="actions">
+                    <td>{formatDate(cause.created_at)}</td>
+                    <td className="pro-actions">
                       <button
-                        className="btn-action btn-edit"
+                        className="pro-table-btn pro-table-btn-edit"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent event bubbling
+                          e.stopPropagation();
                           openEditCauseModal(cause);
                         }}
                       >
                         <i className="fas fa-edit"></i> Edit
                       </button>
-                      {renderDeleteButton(cause.id)}
+                      <button
+                        className="pro-table-btn pro-table-btn-delete"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          confirmDelete(cause.id);
+                        }}
+                      >
+                        <i className="fas fa-trash"></i> Delete
+                      </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10} className="no-data">
+                  <td colSpan={10} className="pro-no-data">
                     <i className="fas fa-info-circle"></i> No causes found
                   </td>
                 </tr>
@@ -503,9 +470,12 @@ function AdminDashboard() {
       </div>
       {/* Add/Edit Cause Modal */}
       {showModal && (
-        <div className="modal" onClick={handleOverlayClick}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="pro-modal" onClick={handleOverlayClick}>
+          <div
+            className="pro-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="pro-modal-header">
               <h3 id="modalTitle">
                 <i
                   className={
@@ -514,17 +484,17 @@ function AdminDashboard() {
                 ></i>{" "}
                 {modalMode === "add" ? "Add New Cause" : "Edit Cause"}
               </h3>
-              <span className="close-btn" onClick={closeModal}>
+              <span className="pro-modal-close" onClick={closeModal}>
                 &times;
               </span>
             </div>
-            <div className="modal-body">
+            <div className="pro-modal-body">
               <form
                 ref={formRef}
-                className="form-grid"
+                className="pro-form"
                 onSubmit={handleFormSubmit}
               >
-                <div className="form-group">
+                <div className="pro-form-group">
                   <label htmlFor="title">Title</label>
                   <input
                     type="text"
@@ -535,7 +505,7 @@ function AdminDashboard() {
                     onChange={handleFormChange}
                   />
                 </div>
-                <div className="form-group">
+                <div className="pro-form-group">
                   <label htmlFor="description">Description</label>
                   <textarea
                     id="description"
@@ -545,7 +515,7 @@ function AdminDashboard() {
                     onChange={handleFormChange}
                   />
                 </div>
-                <div className="form-group">
+                <div className="pro-form-group">
                   <label htmlFor="short_description">Short Description</label>
                   <input
                     type="text"
@@ -555,7 +525,7 @@ function AdminDashboard() {
                     onChange={handleFormChange}
                   />
                 </div>
-                <div className="form-group">
+                <div className="pro-form-group">
                   <label htmlFor="image_url">Image URL</label>
                   <input
                     type="text"
@@ -565,92 +535,100 @@ function AdminDashboard() {
                     onChange={handleFormChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="goal_amount">Goal Amount</label>
-                  <input
-                    type="number"
-                    id="goal_amount"
-                    name="goal_amount"
-                    step="0.01"
-                    min="0"
-                    required
-                    value={form.goal_amount || ""}
-                    onChange={handleFormChange}
-                  />
+                <div className="pro-form-row">
+                  <div className="pro-form-group">
+                    <label htmlFor="goal_amount">Goal Amount</label>
+                    <input
+                      type="number"
+                      id="goal_amount"
+                      name="goal_amount"
+                      step="0.01"
+                      min="0"
+                      required
+                      value={form.goal_amount || ""}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="pro-form-group">
+                    <label htmlFor="raised_amount">Raised Amount</label>
+                    <input
+                      type="number"
+                      id="raised_amount"
+                      name="raised_amount"
+                      step="0.01"
+                      min="0"
+                      value={form.raised_amount || ""}
+                      onChange={handleFormChange}
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="raised_amount">Raised Amount</label>
-                  <input
-                    type="number"
-                    id="raised_amount"
-                    name="raised_amount"
-                    step="0.01"
-                    min="0"
-                    value={form.raised_amount || ""}
-                    onChange={handleFormChange}
-                  />
+                <div className="pro-form-row">
+                  <div className="pro-form-group">
+                    <label htmlFor="currency">Currency</label>
+                    <input
+                      type="text"
+                      id="currency"
+                      name="currency"
+                      value={form.currency || "USD"}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="pro-form-group">
+                    <label htmlFor="category">Category</label>
+                    <input
+                      type="text"
+                      id="category"
+                      name="category"
+                      value={form.category || ""}
+                      onChange={handleFormChange}
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="currency">Currency</label>
-                  <input
-                    type="text"
-                    id="currency"
-                    name="currency"
-                    value={form.currency || "USD"}
-                    onChange={handleFormChange}
-                  />
+                <div className="pro-form-row">
+                  <div className="pro-form-group">
+                    <label htmlFor="start_date">Start Date</label>
+                    <input
+                      type="date"
+                      id="start_date"
+                      name="start_date"
+                      value={form.start_date || ""}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="pro-form-group">
+                    <label htmlFor="end_date">End Date</label>
+                    <input
+                      type="date"
+                      id="end_date"
+                      name="end_date"
+                      value={form.end_date || ""}
+                      onChange={handleFormChange}
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="category">Category</label>
-                  <input
-                    type="text"
-                    id="category"
-                    name="category"
-                    value={form.category || ""}
-                    onChange={handleFormChange}
-                  />
+                <div className="pro-form-row">
+                  <div className="pro-form-group pro-checkbox-group">
+                    <label htmlFor="is_featured">Is Featured</label>
+                    <input
+                      type="checkbox"
+                      id="is_featured"
+                      name="is_featured"
+                      checked={!!form.is_featured}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="pro-form-group pro-checkbox-group">
+                    <label htmlFor="is_active">Is Active</label>
+                    <input
+                      type="checkbox"
+                      id="is_active"
+                      name="is_active"
+                      checked={!!form.is_active}
+                      onChange={handleFormChange}
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="startDate">Start Date</label>
-                  <input
-                    type="date"
-                    id="startDate"
-                    name="startDate"
-                    value={form.startDate || ""}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="endDate">End Date</label>
-                  <input
-                    type="date"
-                    id="endDate"
-                    name="endDate"
-                    value={form.endDate || ""}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="isFeatured">Is Featured</label>
-                  <input
-                    type="checkbox"
-                    id="isFeatured"
-                    name="isFeatured"
-                    checked={!!form.isFeatured}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="isActive">Is Active</label>
-                  <input
-                    type="checkbox"
-                    id="isActive"
-                    name="isActive"
-                    checked={!!form.isActive}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group">
+                <div className="pro-form-group">
                   <label htmlFor="status">Status</label>
                   <select
                     id="status"
@@ -664,40 +642,40 @@ function AdminDashboard() {
                   </select>
                 </div>
                 {modalMode === "edit" && (
-                  <>
-                    <div className="form-group">
-                      <label htmlFor="createdAt">Created At</label>
+                  <div className="pro-form-row">
+                    <div className="pro-form-group">
+                      <label htmlFor="created_at">Created At</label>
                       <input
                         type="text"
-                        id="createdAt"
-                        name="createdAt"
-                        value={form.createdAt || ""}
+                        id="created_at"
+                        name="created_at"
+                        value={form.created_at || ""}
                         readOnly
                       />
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="updatedAt">Updated At</label>
+                    <div className="pro-form-group">
+                      <label htmlFor="updated_at">Updated At</label>
                       <input
                         type="text"
-                        id="updatedAt"
-                        name="updatedAt"
-                        value={form.updatedAt || ""}
+                        id="updated_at"
+                        name="updated_at"
+                        value={form.updated_at || ""}
                         readOnly
                       />
                     </div>
-                  </>
+                  </div>
                 )}
-                <div className="form-actions">
+                <div className="pro-form-actions">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="pro-btn pro-btn-secondary"
                     onClick={closeModal}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="btn btn-primary"
+                    className="pro-btn pro-btn-primary"
                     id="submitBtn"
                   >
                     {modalMode === "add" ? "Add Cause" : "Update Cause"}
@@ -710,21 +688,21 @@ function AdminDashboard() {
       )}
       {/* Delete Confirm Modal */}
       {showDeleteModal && (
-        <div className="modal" onClick={handleOverlayClick}>
+        <div className="pro-modal" onClick={handleOverlayClick}>
           <div
-            className="modal-content"
+            className="pro-modal-content"
             onClick={(e) => e.stopPropagation()}
             style={{ maxWidth: "500px" }}
           >
-            <div className="modal-header">
+            <div className="pro-modal-header">
               <h3>
                 <i className="fas fa-exclamation-triangle"></i> Confirm Deletion
               </h3>
-              <span className="close-btn" onClick={closeModal}>
+              <span className="pro-modal-close" onClick={closeModal}>
                 &times;
               </span>
             </div>
-            <div className="modal-body">
+            <div className="pro-modal-body">
               <p>
                 Are you sure you want to delete this cause? This action cannot
                 be undone.
@@ -734,17 +712,17 @@ function AdminDashboard() {
                 deleted cause.
               </p>
             </div>
-            <div className="form-actions">
+            <div className="pro-form-actions">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="pro-btn pro-btn-secondary"
                 onClick={closeModal}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="btn btn-danger"
+                className="pro-btn pro-btn-danger"
                 onClick={handleDelete}
               >
                 <i className="fas fa-trash"></i> Delete Cause

@@ -10,9 +10,7 @@ import {
   faHandHoldingHeart,
   faEnvelope,
   faUser,
-  faHeart,
   faPlusCircle,
-  faCog,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -226,10 +224,6 @@ const Header = ({ activePage }) => {
         </div>
       </div>
       <div className="header-spacer"></div>
-      <br />
-      <br />
-      <br />
-      <br />
     </>
   );
 };

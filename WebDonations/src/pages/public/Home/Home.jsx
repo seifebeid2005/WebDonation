@@ -14,6 +14,7 @@ import RateUsStars from "../../shared/rateusstars/rateusestars";
 import ProceedToPaymentButton from "../../shared/paymentcoolicon/paymenticon";
 import { handleRandomDonation } from "../../../functions/user/randomdonations";
 // Team data
+import DonationCauseAssistant from "../../shared/DonationCauseAssistant/DonationCauseAssistant";
 
 const TEAM_MEMBERS = [
   {
@@ -282,7 +283,6 @@ export default function Home() {
           Your browser does not support the video tag.
         </video>
       </section>
-
       {/* About Section */}
       <section className="about-section" id="about" ref={aboutRef}>
         <div className="container">
@@ -371,7 +371,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <section className="impact-section" id="impact" ref={impactRef}>
         <div className="container">
           <div className="section-header">
@@ -455,7 +454,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Team Section */}
       <section className="team-section" id="team" ref={teamRef}>
         <div className="container">
@@ -491,7 +489,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Testimonials Section */}
       <section className="testimonials-section">
         <div className="container">
@@ -538,7 +535,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Donation Section */}
       <section className="donate-section" id="donate" ref={donateRef}>
         <div className="container">
@@ -707,7 +703,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Contact Section */}
       <section className="contact-section" id="contact" ref={contactRef}>
         <div className="container">
@@ -833,7 +828,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+      <DonationCauseAssistant />
       <Footer />
     </div>
   );

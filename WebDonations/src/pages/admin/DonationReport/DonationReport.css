@@ -1,6 +1,6 @@
 body {
   background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
   color: #222;
   margin: 0;
 }
@@ -13,7 +13,7 @@ body {
   --success: #2dce89;
   --sidebar-width: 250px;
   --radius: 18px;
-  --shadow: 0 4px 24px rgba(35,41,70,0.10);
+  --shadow: 0 4px 24px rgba(35, 41, 70, 0.1);
   --transition: all 0.2s;
 }
 
@@ -28,7 +28,7 @@ body {
   color: #fff;
   min-width: var(--sidebar-width);
   height: 100vh;
-  box-shadow: 2px 0 12px rgba(35,41,70,0.08);
+  box-shadow: 2px 0 12px rgba(35, 41, 70, 0.08);
   border-radius: 0 var(--radius) var(--radius) 0;
   padding: 32px 0 0 0;
   display: flex;
@@ -44,7 +44,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .profile-icon {
@@ -99,7 +99,7 @@ body {
   display: flex;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   transition: var(--transition);
   border-radius: 0 var(--radius) var(--radius) 0;
@@ -114,7 +114,7 @@ body {
 
 .logout-section {
   padding: 1.5rem;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logout-btn {
@@ -167,13 +167,15 @@ body {
 .content-section {
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 6px 32px 0 rgba(29, 41, 57, 0.10);
+  box-shadow: 0 6px 32px 0 rgba(29, 41, 57, 0.1);
   padding: 32px 28px 18px 28px;
   max-width: 900px;
   margin: 0 auto;
 }
 
-input, select, textarea {
+.content-section input,
+select,
+textarea {
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
   padding: 12px 16px;
@@ -182,12 +184,15 @@ input, select, textarea {
   width: 100%;
   transition: border 0.2s;
 }
-input:focus, select:focus, textarea:focus {
+.content-section input:focus,
+select:focus,
+textarea:focus {
   border: 1.5px solid var(--primary);
   outline: none;
 }
 
-button, .btn {
+.content-section button,
+.btn {
   background: var(--primary);
   color: #fff;
   border: none;
@@ -198,7 +203,8 @@ button, .btn {
   cursor: pointer;
   transition: background 0.2s;
 }
-button:hover, .btn:hover {
+button:hover,
+.btn:hover {
   background: var(--primary-light);
 }
 
@@ -209,7 +215,8 @@ button:hover, .btn:hover {
   background: transparent;
 }
 
-.data-table th, .data-table td {
+.data-table th,
+.data-table td {
   padding: 16px 18px;
   font-size: 1.08em;
 }
@@ -224,12 +231,12 @@ button:hover, .btn:hover {
 .data-table tr {
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(36,48,74,0.04);
+  box-shadow: 0 2px 8px rgba(36, 48, 74, 0.04);
   transition: box-shadow 0.18s, transform 0.18s;
 }
 
 .data-table tr:hover {
-  box-shadow: 0 4px 16px rgba(36,48,74,0.10);
+  box-shadow: 0 4px 16px rgba(36, 48, 74, 0.1);
   transform: translateY(-2px) scale(1.01);
 }
 
@@ -243,7 +250,8 @@ button:hover, .btn:hover {
   box-shadow: 0 1px 3px rgba(245, 54, 92, 0.08);
 }
 
-.badge-warning, .badge-danger {
+.badge-warning,
+.badge-danger {
   background: #ff4d4f;
   color: #fff;
   border: none;
@@ -254,7 +262,8 @@ button:hover, .btn:hover {
   color: #fff;
 }
 
-.btn, .btn-primary {
+.btn,
+.btn-primary {
   background: #2563eb;
   color: #fff;
   border: none;
@@ -264,17 +273,19 @@ button:hover, .btn:hover {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.18s, color 0.18s, box-shadow 0.18s, opacity 0.18s;
-  box-shadow: 0 4px 16px rgba(36,48,74,0.10);
+  box-shadow: 0 4px 16px rgba(36, 48, 74, 0.1);
   letter-spacing: 0.01em;
   outline: none;
   margin-right: 0.5em;
 }
-.btn:hover, .btn-primary:hover {
+.btn:hover,
+.btn-primary:hover {
   background: #1d4ed8;
   color: #fff;
-  box-shadow: 0 6px 24px rgba(37,99,235,0.13);
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.13);
 }
-.btn:disabled, .btn-primary:disabled {
+.btn:disabled,
+.btn-primary:disabled {
   background: #93b4f4;
   color: #fff;
   opacity: 0.7;
@@ -312,7 +323,8 @@ button:hover, .btn:hover {
     border-radius: 10px;
     max-width: 100%;
   }
-  .data-table th, .data-table td {
+  .data-table th,
+  .data-table td {
     padding: 10px 6px;
     font-size: 0.98em;
   }

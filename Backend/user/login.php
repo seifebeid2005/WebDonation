@@ -59,7 +59,7 @@ function login($conn, $email, $password) {
         if ($user = $result->fetch_assoc()) {
             // Verify password (password_hash required in DB)
             if (!password_verify($password, $user['password_hash'])) {
-                echo json_encode(["success" => false, "message" => "Invalid email or password."]);
+                echo json_encode(["success" => false, "message" => "In valid email or password."]);
                 return;
             }
 

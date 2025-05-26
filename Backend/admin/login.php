@@ -8,7 +8,6 @@ header("Access-Control-Allow-Methods: POST");
 
 include("../config/database.php");
 
-// Get JSON POST data
 $data = json_decode(file_get_contents("php://input"), true);
 $username = trim($data['username'] ?? '');
 $password = $data['password'] ?? '';
@@ -18,8 +17,7 @@ if (empty($username) || empty($password)) {
     exit;
 }
 
-// Fetch admin user (login with name OR email for flexibility)
-$stmt = $conn->prepare("SELECT id, name, email, password_hash, role, status FROM admins WHERE name = ? OR email = ? LIMIT 1");
+$stmt = $conn->prepare("SELECT id, name, email, password, role, status FROM admins WHERE name = ? OR email = ? LIMIT 1");
 $stmt->bind_param("ss", $username, $username);
 $stmt->execute();
 $stmt->store_result();
@@ -33,21 +31,19 @@ if ($stmt->num_rows === 0) {
 $stmt->bind_result($id, $db_name, $db_email, $db_password, $role, $status);
 $stmt->fetch();
 
-// If password is plain text, compare directly
+// ⚠️ Plain text password check
 if ($password !== $db_password) {
     echo json_encode(["success" => false, "message" => "Invalid username/email or password."]);
     $stmt->close();
     exit;
 }
 
-// Optional: check if admin is active
 if ($status !== 'active') {
     echo json_encode(["success" => false, "message" => "Account is not active."]);
     $stmt->close();
     exit;
 }
 
-// Set session
 $_SESSION['admin_id'] = $id;
 $_SESSION['admin_username'] = $db_name;
 $_SESSION['admin_role'] = $role;
